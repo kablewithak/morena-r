@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "repo": "vamboai/morena-1.5b-instruct",
+  "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+  "source_file": "load_example.py",
+  "source_sha256": "b0730bd0f6afea78ccb9151c340f0216eacf6335245d24957edae91316bae285",
+  "reserved_marker_segments": [
+    {
+      "node_type": "Assign",
+      "line_start": 39,
+      "line_end": 39,
+      "source": "USER, ASSISTANT = \"<reserved_0>\", \"<reserved_1>\""
+    },
+    {
+      "node_type": "Tuple",
+      "line_start": 39,
+      "line_end": 39,
+      "source": "\"<reserved_0>\", \"<reserved_1>\""
+    },
+    {
+      "node_type": "Constant",
+      "line_start": 39,
+      "line_end": 39,
+      "source": "\"<reserved_0>\""
+    },
+    {
+      "node_type": "Constant",
+      "line_start": 39,
+      "line_end": 39,
+      "source": "\"<reserved_1>\""
+    }
+  ],
+  "generate_function": "def generate(prompt, max_new_tokens=100, temperature=0.7, top_p=0.9):\n    ids = [EOS] + tok.encode(prompt, add_special_tokens=False).ids   # docs start with <eos>\n    x = torch.tensor([ids], device=\"cuda\")\n    out = []\n    for _ in range(max_new_tokens):\n        pos = torch.arange(x.shape[1], device=x.device).unsqueeze(0)\n        logits = model(x, pos, None, x.shape[1], None)[:, -1, :].float()\n        probs = torch.softmax(logits / max(temperature, 1e-5), dim=-1)\n        sp, si = torch.sort(probs, descending=True, dim=-1)\n        sp[sp.cumsum(-1) - sp > top_p] = 0.0\n        nxt = si.gather(-1, torch.multinomial(sp / sp.sum(-1, keepdim=True), 1))\n        t = int(nxt[0, 0])\n        if t == EOS:\n            break\n        out.append(t)\n        x = torch.cat([x, nxt], dim=1)\n    return tok.decode(out, skip_special_tokens=True)"
+}

@@ -1,0 +1,288 @@
+{
+  "schema_version": "1.0",
+  "upstream": {
+    "repo": "vamboai/morena-1.5b-instruct",
+    "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67"
+  },
+  "source_hashes": {
+    "config.json": "e46cbea0588ff434cc5ffec0f06d444579b1f55a47e93f11ce43658a04926391",
+    "tokenizer.json": "97e5dc822407e4ecb6bac02b0fb8a883e465344953e2fac3becf7b5aacae4de3",
+    "modeling_morena.py": "1b2693d823e709a4614f091025448febc19ca0e32aa6a431c28f090e3b486de9",
+    "load_example.py": "b0730bd0f6afea78ccb9151c340f0216eacf6335245d24957edae91316bae285"
+  },
+  "config": {
+    "_comment": "Morena-1.5B target: 28L x 2048d, GQA 16/4 (head_dim 128), SwiGLU 6144, tied 64k embeddings, RoPE 5e5, seq 4096 -> 1.48B params (1.35B non-embedding). GLOBAL BATCH = global_batch_seqs 1024 x 4096 = 4.19M tokens/step, independent of node count: train.py sets grad_accum = round(1024 / (micro_batch * n_gpus)). 64 GPUs: accum 4 (exact). 48 GPUs: 5.33 -> 5 (3.9M). 40 GPUs: 6.4 -> 6 (3.9M). 12 GPUs: 21.3 -> 21 (4.1M). Keep the realized global batch constant across resumes (log line [data] prints it). 250B tokens = ~60k steps. fsdp_shard_size 4 = HSDP: parameters sharded inside each 4-GPU node (NVLink all-gathers), gradients all-reduced across nodes -- per-GPU state for 1.48B fp32 master+grad+Muon momentum+Adam (embed only) ~ 19 GB/4 = 5 GB, fits 64 GB with act_ckpt on. Set fsdp_shard_size 0 for full FSDP across all GPUs (lower memory, more inter-node traffic). LR 1e-3 shared (Moonlight scaling), warmup 2k, WSD decay over the last ~10% -- launch the anneal explicitly with --anneal from any stable checkpoint.",
+    "model": {
+      "vocab_size": 65536,
+      "n_layer": 28,
+      "d_model": 2048,
+      "n_head": 16,
+      "n_kv_head": 4,
+      "d_ff": 6144,
+      "rope_theta": 500000.0,
+      "norm_eps": 1e-05,
+      "tie_embeddings": true,
+      "init_std": 0.02
+    },
+    "train": {
+      "seq_len": 4096,
+      "micro_batch": 4,
+      "grad_accum": 4,
+      "lr": 0.001,
+      "min_lr_ratio": 0.1,
+      "weight_decay": 0.1,
+      "muon_momentum": 0.95,
+      "muon_ns_steps": 5,
+      "muon_ns_mode": "roundrobin",
+      "adam_betas": [
+        0.9,
+        0.95
+      ],
+      "adam_eps": 1e-08,
+      "grad_clip": 1.0,
+      "warmup_steps": 2000,
+      "total_steps": 60000,
+      "decay_steps": 6000,
+      "decay_start": -1,
+      "decay_shape": "1-sqrt",
+      "attn": "auto",
+      "act_ckpt": true,
+      "compile": false,
+      "seed": 1234,
+      "global_batch_seqs": 1024,
+      "fsdp_shard_size": 4,
+      "optimizer": "muon"
+    }
+  },
+  "tokenizer": {
+    "model_type": "BPE",
+    "vocabulary_entries": 65536,
+    "merge_count": 65269,
+    "added_token_count": 11,
+    "added_tokens": [
+      {
+        "id": 0,
+        "content": "<pad>",
+        "special": true
+      },
+      {
+        "id": 1,
+        "content": "<bos>",
+        "special": true
+      },
+      {
+        "id": 2,
+        "content": "<eos>",
+        "special": true
+      },
+      {
+        "id": 3,
+        "content": "<reserved_0>",
+        "special": true
+      },
+      {
+        "id": 4,
+        "content": "<reserved_1>",
+        "special": true
+      },
+      {
+        "id": 5,
+        "content": "<reserved_2>",
+        "special": true
+      },
+      {
+        "id": 6,
+        "content": "<reserved_3>",
+        "special": true
+      },
+      {
+        "id": 7,
+        "content": "<reserved_4>",
+        "special": true
+      },
+      {
+        "id": 8,
+        "content": "<reserved_5>",
+        "special": true
+      },
+      {
+        "id": 9,
+        "content": "<reserved_6>",
+        "special": true
+      },
+      {
+        "id": 10,
+        "content": "<reserved_7>",
+        "special": true
+      }
+    ],
+    "normalizer": {
+      "type": "NFC"
+    },
+    "pre_tokenizer": {
+      "type": "Sequence",
+      "pretokenizers": [
+        {
+          "type": "Digits",
+          "individual_digits": true
+        },
+        {
+          "type": "ByteLevel",
+          "add_prefix_space": false,
+          "trim_offsets": true,
+          "use_regex": true
+        }
+      ]
+    },
+    "post_processor": null,
+    "decoder": {
+      "type": "ByteLevel",
+      "add_prefix_space": true,
+      "trim_offsets": true,
+      "use_regex": true
+    }
+  },
+  "modeling_source": {
+    "classes": [
+      "ModelConfig",
+      "TrainConfig",
+      "RMSNorm",
+      "Attention",
+      "MLP",
+      "Block",
+      "Transformer",
+      "Source",
+      "MixtureSampler",
+      "Loader",
+      "Muon"
+    ],
+    "functions": [
+      "log0",
+      "load_json",
+      "rope_cos_sin",
+      "apply_rope",
+      "choose_attn",
+      "_coprime_multiplier",
+      "build_batch",
+      "newton_schulz5",
+      "lr_at",
+      "ckpt_dir",
+      "_param_fqns",
+      "_init_opt_state",
+      "optimizer_state_for_dcp",
+      "state_fingerprint",
+      "save_checkpoint",
+      "load_checkpoint",
+      "find_latest",
+      "parse",
+      "hms_to_sec",
+      "main",
+      "_mark_done",
+      "__init__",
+      "forward",
+      "__init__",
+      "forward",
+      "__init__",
+      "forward",
+      "__init__",
+      "forward",
+      "__init__",
+      "_init",
+      "forward",
+      "n_params",
+      "__init__",
+      "_mmap",
+      "_mmap_mask",
+      "window",
+      "window_mask",
+      "__init__",
+      "state_dict",
+      "load_state_dict",
+      "_perm",
+      "_pos",
+      "step_assignments",
+      "epochs",
+      "__init__",
+      "_run",
+      "next",
+      "__init__",
+      "_local_rows",
+      "step",
+      "_sig",
+      "should_stop_for_time",
+      "_tick"
+    ],
+    "imports": [
+      "__future__",
+      "argparse",
+      "dataclasses",
+      "flash_attn",
+      "json",
+      "math",
+      "numpy",
+      "os",
+      "queue",
+      "random",
+      "re",
+      "shutil",
+      "signal",
+      "sys",
+      "threading",
+      "time",
+      "torch",
+      "torch.distributed",
+      "torch.distributed._composable.fsdp",
+      "torch.distributed._tensor",
+      "torch.distributed.checkpoint",
+      "torch.distributed.checkpoint.state_dict",
+      "torch.distributed.device_mesh",
+      "torch.distributed.fsdp",
+      "torch.distributed.tensor",
+      "torch.nn",
+      "torch.nn.functional",
+      "typing",
+      "wandb",
+      "zlib"
+    ],
+    "selected_literals": [
+      "  (flash_attn importable: ",
+      "!! Use --attn sdpa_mask for correct (slower, memory-hungry) masking without flash-attn.",
+      "!! WARNING: flash-attn varlen NOT available -> falling back to plain SDPA causal attention.",
+      "--attn flash requested but flash_attn is not importable",
+      "A directory of raw token shards with index.json {dtype, eos_id, shards:[{file,n_tokens}]}.\n    Windows of seq_len+1 tokens are enumerated per shard (stride seq_len), never crossing shards.",
+      "Make every optimizer state tensor exist before loading, without running a fake step.\n    Muon: momentum_buffer (sharded like the param). AdamW: exp_avg, exp_avg_sq (sharded), step (CPU scalar).",
+      "Morena production trainer — single file, dependency-light.\n\nDense Llama-style decoder (RMSNorm, RoPE, GQA, SwiGLU, tied embeddings) trained with\nFSDP2 (per-parameter sharding, bf16 compute / fp32 master+reduce), Muon (2-D hidden\nweights) + AdamW (embeddings, norms), WSD schedule, document-packed sequences with\ncross-document masking (FlashAttention-2 varlen when available), a deterministic\nmixture sampler, rotating + milestone checkpoints (torch.distributed.checkpoint),\nbit-exact resume and a walltime-aware clean exit for 24h SLURM chunks.\n\nUsage (single node):  torchrun --nproc_per_node 4 train.py --config configs/proxy200m.json                         --mix configs/mix_330b.json --data-root /scratch/morena/data --out runs/proxy\nSee TRAIN_README.md.  Requires torch >= 2.4 (FSDP2 / DTensor); flash-attn >= 2.5 optional.\n",
+      "Muon for 2-D hidden weights. Works for plain tensors and for FSDP2 DTensors (Shard(0)).\n\n    DESIGN CHOICE (documented): we use FSDP2 (fully_shard, per-parameter DTensor sharding) rather\n    than FSDP1 + use_orig_params. With FSDP2 every parameter and its gradient is a DTensor whose\n    2-D shape is preserved and whose local shard is a contiguous row-block, so the\n    orthogonalization is computed on the FULL gathered matrix: momentum is kept sharded\n    (memory = 1 extra sharded copy), the Nesterov update is all-gathered (`full_tensor()`),\n    Newton-Schulz runs on the full 2-D matrix, and each rank applies its own row-slice.\n    `ns_mode='roundrobin'` assigns each matrix to one owner rank which computes NS and broadcasts\n    the result (compute / world); `'redundant'` makes every rank compute NS (no broadcast, ~10%\n    extra compute at 12 GPUs for 1.5B). Both are bit-identical across ranks.\n    Scaling follows Moonlight: update *= 0.2 * sqrt(max(rows, cols)) so Muon and AdamW share LR/WD.\n    ",
+      "cpu",
+      "cuda",
+      "cuda_time_total",
+      "dtype",
+      "flash",
+      "sdpa",
+      "sdpa_mask",
+      "set_requires_gradient_sync"
+    ]
+  },
+  "reference_loader": {
+    "classes": [],
+    "functions": [
+      "generate"
+    ],
+    "imports": [
+      "json",
+      "modeling_morena",
+      "safetensors.torch",
+      "tokenizers",
+      "torch"
+    ],
+    "selected_literals": [
+      "<reserved_0>",
+      "<reserved_1>",
+      "Load the Morena preview weights (morena1p5b-sft16) and sample from them.\n\nMorena is not a transformers architecture; it is `Transformer` from modeling_morena.py, and that\nclass has NO .generate() and a training-shaped forward:\n\n    forward(idx, positions, cu_seqlens, max_seqlen, mask)\n\nFor single-sequence eval pass cu_seqlens=None and mask=None, which is plain causal SDPA. The\nsampler below is the one the eval harness uses (no KV cache; fine for a couple hundred tokens).\n\n    pip install torch safetensors tokenizers\n    python load_example.py\n",
+      "cuda",
+      "model.safetensors",
+      "sdpa",
+      "tokenizer.json"
+    ]
+  }
+}
