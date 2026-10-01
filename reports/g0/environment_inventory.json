@@ -1,0 +1,49 @@
+{
+    "schema_version":  "1.0",
+    "captured_utc":  "2026-10-01T19:22:17.5929636Z",
+    "repository":  {
+                       "path":  "C:\\Users\\kabom\\Documents\\Machine Learning\\Machine Learning Workspace\\morena-r",
+                       "branch":  "main",
+                       "remotes":  [
+
+                                   ]
+                   },
+    "os":  {
+               "caption":  "Microsoft Windows 11 Pro",
+               "version":  "10.0.26100",
+               "build_number":  "26100",
+               "architecture":  "64-bit"
+           },
+    "shell":  {
+                  "name":  "Windows PowerShell",
+                  "version":  "5.1.26100.9444",
+                  "edition":  "Desktop"
+              },
+    "cpu":  {
+                "name":  "Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz",
+                "physical_cores":  4,
+                "logical_processors":  8
+            },
+    "memory":  {
+                   "total_gib":  15.76
+               },
+    "disk":  {
+                 "drive":  "C:",
+                 "free_gib":  58.27,
+                 "used_gib":  417.59
+             },
+    "gpu":  [
+                {
+                    "name":  "Intel(R) UHD Graphics",
+                    "driver_version":  "31.0.101.2135",
+                    "reported_adapter_ram_bytes":  1073741824
+                }
+            ],
+    "tools":  {
+                  "git_version":  "git version 2.51.0.windows.1",
+                  "python_version":  "Python 3.11.9",
+                  "python_executable":  "C:\\Users\\kabom\\Documents\\Machine Learning\\Machine Learning Workspace\\morena-r\\.venv\\Scripts\\python.exe",
+                  "uv_version":  "uv 0.9.26 (ee4f00362 2026-01-15)",
+                  "nvidia_smi_available":  false
+              }
+}

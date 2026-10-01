@@ -1,0 +1,61 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+
+# Test / type / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Model / ML artifacts
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+
+# Local model and dataset caches
+.cache/
+models/
+artifacts/
+checkpoints/
+
+# Experiment outputs
+experiments/outputs/
+
+# Private / protected evaluation material
+data/protected/
+protected/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,37 @@
+[
+    {
+        "file":  "README.md",
+        "bytes":  7861,
+        "local_sha256":  "a9fd73a174869f70d42c048293dca864e74e87ef1100227ab5e9c4d717f2af84",
+        "upstream_sha256":  null,
+        "matches_upstream":  null
+    },
+    {
+        "file":  "config.json",
+        "bytes":  1813,
+        "local_sha256":  "e46cbea0588ff434cc5ffec0f06d444579b1f55a47e93f11ce43658a04926391",
+        "upstream_sha256":  "e46cbea0588ff434cc5ffec0f06d444579b1f55a47e93f11ce43658a04926391",
+        "matches_upstream":  true
+    },
+    {
+        "file":  "tokenizer.json",
+        "bytes":  4655332,
+        "local_sha256":  "97e5dc822407e4ecb6bac02b0fb8a883e465344953e2fac3becf7b5aacae4de3",
+        "upstream_sha256":  "97e5dc822407e4ecb6bac02b0fb8a883e465344953e2fac3becf7b5aacae4de3",
+        "matches_upstream":  true
+    },
+    {
+        "file":  "modeling_morena.py",
+        "bytes":  52103,
+        "local_sha256":  "1b2693d823e709a4614f091025448febc19ca0e32aa6a431c28f090e3b486de9",
+        "upstream_sha256":  "1b2693d823e709a4614f091025448febc19ca0e32aa6a431c28f090e3b486de9",
+        "matches_upstream":  true
+    },
+    {
+        "file":  "load_example.py",
+        "bytes":  2888,
+        "local_sha256":  "b0730bd0f6afea78ccb9151c340f0216eacf6335245d24957edae91316bae285",
+        "upstream_sha256":  "b0730bd0f6afea78ccb9151c340f0216eacf6335245d24957edae91316bae285",
+        "matches_upstream":  true
+    }
+]

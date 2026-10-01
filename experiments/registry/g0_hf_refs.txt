@@ -1,0 +1,7 @@
+captured_utc=2026-10-01T19:22:03.3281425Z
+instruct_repo=vamboai/morena-1.5b-instruct
+instruct_revision=b4be1225c9b593ffa79f2bf46d8a84a83d385c67
+base_repo=vamboai/morena-1.5b-base
+base_revision=e98192f5f3ddb97d118e107ece37399f3cbe84d2
+gguf_repo=vamboai/morena-1.5b-instruct-gguf
+gguf_revision=ed64de7262b6edbe1af14c340ed4ea368a36349d
