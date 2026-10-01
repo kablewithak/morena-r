@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "repository": "vamboai/morena-1.5b-instruct",
+  "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+  "weight_sha256": "2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e",
+  "checkpoint_tensor_count": 254,
+  "model_state_tensor_count": 254,
+  "missing_keys": [],
+  "unexpected_keys": [],
+  "shape_mismatches": {},
+  "parameter_count": 1484900352,
+  "loaded_parameter_count": 1484900352,
+  "parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "attention_mode": "sdpa",
+  "strict_load": true,
+  "state": "STRICT_STATE_DICT_LOAD_VERIFIED"
+}

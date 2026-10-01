@@ -1,0 +1,1233 @@
+{
+  "schema_version": "1.0",
+  "repository": "vamboai/morena-1.5b-instruct",
+  "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+  "filename": "model.safetensors",
+  "bytes": 2969826328,
+  "expected_sha256": "2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e",
+  "actual_sha256": "2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e",
+  "checksum_match": true,
+  "tensor_count": 254,
+  "tensor_keys": [
+    "embed.weight",
+    "layers.0.attn.wk.weight",
+    "layers.0.attn.wo.weight",
+    "layers.0.attn.wq.weight",
+    "layers.0.attn.wv.weight",
+    "layers.0.attn_norm.weight",
+    "layers.0.mlp.w1.weight",
+    "layers.0.mlp.w2.weight",
+    "layers.0.mlp.w3.weight",
+    "layers.0.mlp_norm.weight",
+    "layers.1.attn.wk.weight",
+    "layers.1.attn.wo.weight",
+    "layers.1.attn.wq.weight",
+    "layers.1.attn.wv.weight",
+    "layers.1.attn_norm.weight",
+    "layers.1.mlp.w1.weight",
+    "layers.1.mlp.w2.weight",
+    "layers.1.mlp.w3.weight",
+    "layers.1.mlp_norm.weight",
+    "layers.10.attn.wk.weight",
+    "layers.10.attn.wo.weight",
+    "layers.10.attn.wq.weight",
+    "layers.10.attn.wv.weight",
+    "layers.10.attn_norm.weight",
+    "layers.10.mlp.w1.weight",
+    "layers.10.mlp.w2.weight",
+    "layers.10.mlp.w3.weight",
+    "layers.10.mlp_norm.weight",
+    "layers.11.attn.wk.weight",
+    "layers.11.attn.wo.weight",
+    "layers.11.attn.wq.weight",
+    "layers.11.attn.wv.weight",
+    "layers.11.attn_norm.weight",
+    "layers.11.mlp.w1.weight",
+    "layers.11.mlp.w2.weight",
+    "layers.11.mlp.w3.weight",
+    "layers.11.mlp_norm.weight",
+    "layers.12.attn.wk.weight",
+    "layers.12.attn.wo.weight",
+    "layers.12.attn.wq.weight",
+    "layers.12.attn.wv.weight",
+    "layers.12.attn_norm.weight",
+    "layers.12.mlp.w1.weight",
+    "layers.12.mlp.w2.weight",
+    "layers.12.mlp.w3.weight",
+    "layers.12.mlp_norm.weight",
+    "layers.13.attn.wk.weight",
+    "layers.13.attn.wo.weight",
+    "layers.13.attn.wq.weight",
+    "layers.13.attn.wv.weight",
+    "layers.13.attn_norm.weight",
+    "layers.13.mlp.w1.weight",
+    "layers.13.mlp.w2.weight",
+    "layers.13.mlp.w3.weight",
+    "layers.13.mlp_norm.weight",
+    "layers.14.attn.wk.weight",
+    "layers.14.attn.wo.weight",
+    "layers.14.attn.wq.weight",
+    "layers.14.attn.wv.weight",
+    "layers.14.attn_norm.weight",
+    "layers.14.mlp.w1.weight",
+    "layers.14.mlp.w2.weight",
+    "layers.14.mlp.w3.weight",
+    "layers.14.mlp_norm.weight",
+    "layers.15.attn.wk.weight",
+    "layers.15.attn.wo.weight",
+    "layers.15.attn.wq.weight",
+    "layers.15.attn.wv.weight",
+    "layers.15.attn_norm.weight",
+    "layers.15.mlp.w1.weight",
+    "layers.15.mlp.w2.weight",
+    "layers.15.mlp.w3.weight",
+    "layers.15.mlp_norm.weight",
+    "layers.16.attn.wk.weight",
+    "layers.16.attn.wo.weight",
+    "layers.16.attn.wq.weight",
+    "layers.16.attn.wv.weight",
+    "layers.16.attn_norm.weight",
+    "layers.16.mlp.w1.weight",
+    "layers.16.mlp.w2.weight",
+    "layers.16.mlp.w3.weight",
+    "layers.16.mlp_norm.weight",
+    "layers.17.attn.wk.weight",
+    "layers.17.attn.wo.weight",
+    "layers.17.attn.wq.weight",
+    "layers.17.attn.wv.weight",
+    "layers.17.attn_norm.weight",
+    "layers.17.mlp.w1.weight",
+    "layers.17.mlp.w2.weight",
+    "layers.17.mlp.w3.weight",
+    "layers.17.mlp_norm.weight",
+    "layers.18.attn.wk.weight",
+    "layers.18.attn.wo.weight",
+    "layers.18.attn.wq.weight",
+    "layers.18.attn.wv.weight",
+    "layers.18.attn_norm.weight",
+    "layers.18.mlp.w1.weight",
+    "layers.18.mlp.w2.weight",
+    "layers.18.mlp.w3.weight",
+    "layers.18.mlp_norm.weight",
+    "layers.19.attn.wk.weight",
+    "layers.19.attn.wo.weight",
+    "layers.19.attn.wq.weight",
+    "layers.19.attn.wv.weight",
+    "layers.19.attn_norm.weight",
+    "layers.19.mlp.w1.weight",
+    "layers.19.mlp.w2.weight",
+    "layers.19.mlp.w3.weight",
+    "layers.19.mlp_norm.weight",
+    "layers.2.attn.wk.weight",
+    "layers.2.attn.wo.weight",
+    "layers.2.attn.wq.weight",
+    "layers.2.attn.wv.weight",
+    "layers.2.attn_norm.weight",
+    "layers.2.mlp.w1.weight",
+    "layers.2.mlp.w2.weight",
+    "layers.2.mlp.w3.weight",
+    "layers.2.mlp_norm.weight",
+    "layers.20.attn.wk.weight",
+    "layers.20.attn.wo.weight",
+    "layers.20.attn.wq.weight",
+    "layers.20.attn.wv.weight",
+    "layers.20.attn_norm.weight",
+    "layers.20.mlp.w1.weight",
+    "layers.20.mlp.w2.weight",
+    "layers.20.mlp.w3.weight",
+    "layers.20.mlp_norm.weight",
+    "layers.21.attn.wk.weight",
+    "layers.21.attn.wo.weight",
+    "layers.21.attn.wq.weight",
+    "layers.21.attn.wv.weight",
+    "layers.21.attn_norm.weight",
+    "layers.21.mlp.w1.weight",
+    "layers.21.mlp.w2.weight",
+    "layers.21.mlp.w3.weight",
+    "layers.21.mlp_norm.weight",
+    "layers.22.attn.wk.weight",
+    "layers.22.attn.wo.weight",
+    "layers.22.attn.wq.weight",
+    "layers.22.attn.wv.weight",
+    "layers.22.attn_norm.weight",
+    "layers.22.mlp.w1.weight",
+    "layers.22.mlp.w2.weight",
+    "layers.22.mlp.w3.weight",
+    "layers.22.mlp_norm.weight",
+    "layers.23.attn.wk.weight",
+    "layers.23.attn.wo.weight",
+    "layers.23.attn.wq.weight",
+    "layers.23.attn.wv.weight",
+    "layers.23.attn_norm.weight",
+    "layers.23.mlp.w1.weight",
+    "layers.23.mlp.w2.weight",
+    "layers.23.mlp.w3.weight",
+    "layers.23.mlp_norm.weight",
+    "layers.24.attn.wk.weight",
+    "layers.24.attn.wo.weight",
+    "layers.24.attn.wq.weight",
+    "layers.24.attn.wv.weight",
+    "layers.24.attn_norm.weight",
+    "layers.24.mlp.w1.weight",
+    "layers.24.mlp.w2.weight",
+    "layers.24.mlp.w3.weight",
+    "layers.24.mlp_norm.weight",
+    "layers.25.attn.wk.weight",
+    "layers.25.attn.wo.weight",
+    "layers.25.attn.wq.weight",
+    "layers.25.attn.wv.weight",
+    "layers.25.attn_norm.weight",
+    "layers.25.mlp.w1.weight",
+    "layers.25.mlp.w2.weight",
+    "layers.25.mlp.w3.weight",
+    "layers.25.mlp_norm.weight",
+    "layers.26.attn.wk.weight",
+    "layers.26.attn.wo.weight",
+    "layers.26.attn.wq.weight",
+    "layers.26.attn.wv.weight",
+    "layers.26.attn_norm.weight",
+    "layers.26.mlp.w1.weight",
+    "layers.26.mlp.w2.weight",
+    "layers.26.mlp.w3.weight",
+    "layers.26.mlp_norm.weight",
+    "layers.27.attn.wk.weight",
+    "layers.27.attn.wo.weight",
+    "layers.27.attn.wq.weight",
+    "layers.27.attn.wv.weight",
+    "layers.27.attn_norm.weight",
+    "layers.27.mlp.w1.weight",
+    "layers.27.mlp.w2.weight",
+    "layers.27.mlp.w3.weight",
+    "layers.27.mlp_norm.weight",
+    "layers.3.attn.wk.weight",
+    "layers.3.attn.wo.weight",
+    "layers.3.attn.wq.weight",
+    "layers.3.attn.wv.weight",
+    "layers.3.attn_norm.weight",
+    "layers.3.mlp.w1.weight",
+    "layers.3.mlp.w2.weight",
+    "layers.3.mlp.w3.weight",
+    "layers.3.mlp_norm.weight",
+    "layers.4.attn.wk.weight",
+    "layers.4.attn.wo.weight",
+    "layers.4.attn.wq.weight",
+    "layers.4.attn.wv.weight",
+    "layers.4.attn_norm.weight",
+    "layers.4.mlp.w1.weight",
+    "layers.4.mlp.w2.weight",
+    "layers.4.mlp.w3.weight",
+    "layers.4.mlp_norm.weight",
+    "layers.5.attn.wk.weight",
+    "layers.5.attn.wo.weight",
+    "layers.5.attn.wq.weight",
+    "layers.5.attn.wv.weight",
+    "layers.5.attn_norm.weight",
+    "layers.5.mlp.w1.weight",
+    "layers.5.mlp.w2.weight",
+    "layers.5.mlp.w3.weight",
+    "layers.5.mlp_norm.weight",
+    "layers.6.attn.wk.weight",
+    "layers.6.attn.wo.weight",
+    "layers.6.attn.wq.weight",
+    "layers.6.attn.wv.weight",
+    "layers.6.attn_norm.weight",
+    "layers.6.mlp.w1.weight",
+    "layers.6.mlp.w2.weight",
+    "layers.6.mlp.w3.weight",
+    "layers.6.mlp_norm.weight",
+    "layers.7.attn.wk.weight",
+    "layers.7.attn.wo.weight",
+    "layers.7.attn.wq.weight",
+    "layers.7.attn.wv.weight",
+    "layers.7.attn_norm.weight",
+    "layers.7.mlp.w1.weight",
+    "layers.7.mlp.w2.weight",
+    "layers.7.mlp.w3.weight",
+    "layers.7.mlp_norm.weight",
+    "layers.8.attn.wk.weight",
+    "layers.8.attn.wo.weight",
+    "layers.8.attn.wq.weight",
+    "layers.8.attn.wv.weight",
+    "layers.8.attn_norm.weight",
+    "layers.8.mlp.w1.weight",
+    "layers.8.mlp.w2.weight",
+    "layers.8.mlp.w3.weight",
+    "layers.8.mlp_norm.weight",
+    "layers.9.attn.wk.weight",
+    "layers.9.attn.wo.weight",
+    "layers.9.attn.wq.weight",
+    "layers.9.attn.wv.weight",
+    "layers.9.attn_norm.weight",
+    "layers.9.mlp.w1.weight",
+    "layers.9.mlp.w2.weight",
+    "layers.9.mlp.w3.weight",
+    "layers.9.mlp_norm.weight",
+    "norm.weight"
+  ],
+  "tensor_shapes": {
+    "embed.weight": [
+      65536,
+      2048
+    ],
+    "layers.0.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.0.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.0.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.0.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.0.attn_norm.weight": [
+      2048
+    ],
+    "layers.0.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.0.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.0.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.0.mlp_norm.weight": [
+      2048
+    ],
+    "layers.1.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.1.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.1.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.1.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.1.attn_norm.weight": [
+      2048
+    ],
+    "layers.1.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.1.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.1.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.1.mlp_norm.weight": [
+      2048
+    ],
+    "layers.10.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.10.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.10.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.10.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.10.attn_norm.weight": [
+      2048
+    ],
+    "layers.10.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.10.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.10.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.10.mlp_norm.weight": [
+      2048
+    ],
+    "layers.11.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.11.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.11.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.11.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.11.attn_norm.weight": [
+      2048
+    ],
+    "layers.11.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.11.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.11.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.11.mlp_norm.weight": [
+      2048
+    ],
+    "layers.12.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.12.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.12.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.12.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.12.attn_norm.weight": [
+      2048
+    ],
+    "layers.12.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.12.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.12.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.12.mlp_norm.weight": [
+      2048
+    ],
+    "layers.13.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.13.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.13.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.13.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.13.attn_norm.weight": [
+      2048
+    ],
+    "layers.13.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.13.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.13.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.13.mlp_norm.weight": [
+      2048
+    ],
+    "layers.14.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.14.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.14.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.14.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.14.attn_norm.weight": [
+      2048
+    ],
+    "layers.14.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.14.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.14.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.14.mlp_norm.weight": [
+      2048
+    ],
+    "layers.15.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.15.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.15.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.15.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.15.attn_norm.weight": [
+      2048
+    ],
+    "layers.15.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.15.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.15.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.15.mlp_norm.weight": [
+      2048
+    ],
+    "layers.16.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.16.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.16.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.16.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.16.attn_norm.weight": [
+      2048
+    ],
+    "layers.16.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.16.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.16.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.16.mlp_norm.weight": [
+      2048
+    ],
+    "layers.17.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.17.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.17.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.17.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.17.attn_norm.weight": [
+      2048
+    ],
+    "layers.17.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.17.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.17.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.17.mlp_norm.weight": [
+      2048
+    ],
+    "layers.18.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.18.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.18.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.18.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.18.attn_norm.weight": [
+      2048
+    ],
+    "layers.18.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.18.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.18.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.18.mlp_norm.weight": [
+      2048
+    ],
+    "layers.19.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.19.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.19.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.19.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.19.attn_norm.weight": [
+      2048
+    ],
+    "layers.19.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.19.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.19.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.19.mlp_norm.weight": [
+      2048
+    ],
+    "layers.2.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.2.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.2.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.2.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.2.attn_norm.weight": [
+      2048
+    ],
+    "layers.2.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.2.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.2.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.2.mlp_norm.weight": [
+      2048
+    ],
+    "layers.20.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.20.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.20.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.20.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.20.attn_norm.weight": [
+      2048
+    ],
+    "layers.20.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.20.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.20.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.20.mlp_norm.weight": [
+      2048
+    ],
+    "layers.21.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.21.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.21.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.21.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.21.attn_norm.weight": [
+      2048
+    ],
+    "layers.21.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.21.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.21.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.21.mlp_norm.weight": [
+      2048
+    ],
+    "layers.22.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.22.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.22.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.22.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.22.attn_norm.weight": [
+      2048
+    ],
+    "layers.22.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.22.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.22.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.22.mlp_norm.weight": [
+      2048
+    ],
+    "layers.23.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.23.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.23.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.23.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.23.attn_norm.weight": [
+      2048
+    ],
+    "layers.23.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.23.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.23.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.23.mlp_norm.weight": [
+      2048
+    ],
+    "layers.24.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.24.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.24.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.24.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.24.attn_norm.weight": [
+      2048
+    ],
+    "layers.24.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.24.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.24.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.24.mlp_norm.weight": [
+      2048
+    ],
+    "layers.25.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.25.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.25.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.25.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.25.attn_norm.weight": [
+      2048
+    ],
+    "layers.25.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.25.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.25.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.25.mlp_norm.weight": [
+      2048
+    ],
+    "layers.26.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.26.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.26.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.26.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.26.attn_norm.weight": [
+      2048
+    ],
+    "layers.26.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.26.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.26.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.26.mlp_norm.weight": [
+      2048
+    ],
+    "layers.27.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.27.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.27.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.27.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.27.attn_norm.weight": [
+      2048
+    ],
+    "layers.27.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.27.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.27.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.27.mlp_norm.weight": [
+      2048
+    ],
+    "layers.3.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.3.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.3.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.3.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.3.attn_norm.weight": [
+      2048
+    ],
+    "layers.3.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.3.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.3.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.3.mlp_norm.weight": [
+      2048
+    ],
+    "layers.4.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.4.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.4.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.4.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.4.attn_norm.weight": [
+      2048
+    ],
+    "layers.4.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.4.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.4.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.4.mlp_norm.weight": [
+      2048
+    ],
+    "layers.5.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.5.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.5.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.5.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.5.attn_norm.weight": [
+      2048
+    ],
+    "layers.5.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.5.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.5.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.5.mlp_norm.weight": [
+      2048
+    ],
+    "layers.6.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.6.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.6.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.6.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.6.attn_norm.weight": [
+      2048
+    ],
+    "layers.6.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.6.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.6.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.6.mlp_norm.weight": [
+      2048
+    ],
+    "layers.7.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.7.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.7.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.7.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.7.attn_norm.weight": [
+      2048
+    ],
+    "layers.7.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.7.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.7.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.7.mlp_norm.weight": [
+      2048
+    ],
+    "layers.8.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.8.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.8.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.8.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.8.attn_norm.weight": [
+      2048
+    ],
+    "layers.8.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.8.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.8.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.8.mlp_norm.weight": [
+      2048
+    ],
+    "layers.9.attn.wk.weight": [
+      512,
+      2048
+    ],
+    "layers.9.attn.wo.weight": [
+      2048,
+      2048
+    ],
+    "layers.9.attn.wq.weight": [
+      2048,
+      2048
+    ],
+    "layers.9.attn.wv.weight": [
+      512,
+      2048
+    ],
+    "layers.9.attn_norm.weight": [
+      2048
+    ],
+    "layers.9.mlp.w1.weight": [
+      6144,
+      2048
+    ],
+    "layers.9.mlp.w2.weight": [
+      2048,
+      6144
+    ],
+    "layers.9.mlp.w3.weight": [
+      6144,
+      2048
+    ],
+    "layers.9.mlp_norm.weight": [
+      2048
+    ],
+    "norm.weight": [
+      2048
+    ]
+  },
+  "metadata": {
+    "format": "pt",
+    "source": "step_00080083"
+  },
+  "state": "DOWNLOADED_AND_SHA256_VERIFIED"
+}
