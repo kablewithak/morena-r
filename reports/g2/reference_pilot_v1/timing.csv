@@ -1,0 +1,9 @@
+case_id,attempt_status,elapsed_seconds,timing_mode
+ref-respond-supported,completed,0.000000,synthetic_reference_zero
+ref-ask-clarification,completed,0.000000,synthetic_reference_zero
+ref-refuse,completed,0.000000,synthetic_reference_zero
+ref-tool-correct,completed,0.000000,synthetic_reference_zero
+ref-invalid-json,invalid_response,0.000000,synthetic_reference_zero
+ref-timeout,timeout,0.000000,synthetic_reference_zero
+ref-context-overflow,execution_error,0.000000,synthetic_reference_zero
+ref-wrong-tool,completed,0.000000,synthetic_reference_zero

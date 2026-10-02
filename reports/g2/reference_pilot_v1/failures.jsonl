@@ -1,0 +1,4 @@
+{"attempt_id":"g2-reference-pilot-v1-2893f988149c:ref-invalid-json:1","case_id":"ref-invalid-json","failure_labels":["invalid_schema","parser_failure"],"parse_error":"PARSE_ERROR","runtime_error":null,"status":"invalid_response"}
+{"attempt_id":"g2-reference-pilot-v1-2893f988149c:ref-timeout:1","case_id":"ref-timeout","failure_labels":["timeout"],"parse_error":null,"runtime_error":"TIMEOUT","status":"timeout"}
+{"attempt_id":"g2-reference-pilot-v1-2893f988149c:ref-context-overflow:1","case_id":"ref-context-overflow","failure_labels":["overflow"],"parse_error":null,"runtime_error":"CONTEXT_OVERFLOW","status":"execution_error"}
+{"attempt_id":"g2-reference-pilot-v1-2893f988149c:ref-wrong-tool:1","case_id":"ref-wrong-tool","failure_labels":["wrong_tool"],"parse_error":null,"runtime_error":null,"status":"completed"}
