@@ -26,6 +26,10 @@ from morena_r.contracts.evaluation import (  # noqa: E402
     RunSummary,
 )
 from morena_r.contracts.scoring import ScoreRecord  # noqa: E402
+from morena_r.evaluation.tool_episode import (  # noqa: E402
+    EpisodeEvent,
+    ToolEpisodeResult,
+)
 
 
 schemas = {
@@ -42,6 +46,8 @@ schemas = {
     "eval_case.schema.json": EvalCase.model_json_schema(),
     "attempt_record.schema.json": AttemptRecord.model_json_schema(),
     "run_summary.schema.json": RunSummary.model_json_schema(),
+    "episode_event.schema.json": EpisodeEvent.model_json_schema(),
+    "tool_episode_result.schema.json": ToolEpisodeResult.model_json_schema(),
 }
 
 
