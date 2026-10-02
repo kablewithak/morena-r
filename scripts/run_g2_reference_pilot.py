@@ -2,9 +2,16 @@ from __future__ import annotations
 
 import hashlib
 import subprocess
+import sys
 from pathlib import Path
 
-from morena_r.contracts.evaluation import EvalInput
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+
+sys.path.insert(0, str(SRC))
+
+from morena_r.contracts.evaluation import EvalInput  # noqa: E402
 from morena_r.evaluation.dataset import (
     dataset_sha256,
     load_eval_cases,
@@ -19,8 +26,6 @@ from morena_r.reporting.run_bundle import (
     write_run_bundle,
 )
 
-
-ROOT = Path(__file__).resolve().parents[1]
 
 PILOT_PATH = (
     ROOT
