@@ -1,0 +1,552 @@
+{
+  "$defs": {
+    "Answerability": {
+      "enum": [
+        "SUPPORTED",
+        "UNSUPPORTED",
+        "CONFLICTING",
+        "INSUFFICIENT_CONTEXT",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Answerability",
+      "type": "string"
+    },
+    "AskClarificationResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "answerability": {
+          "$ref": "#/$defs/Answerability"
+        },
+        "decision": {
+          "const": "ASK_CLARIFICATION",
+          "title": "Decision",
+          "type": "string"
+        },
+        "question": {
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "const": "OK",
+          "default": "OK",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "answerability",
+        "question"
+      ],
+      "title": "AskClarificationResponse",
+      "type": "object"
+    },
+    "AttemptErrorCode": {
+      "enum": [
+        "PARSE_ERROR",
+        "UNKNOWN_FIELD",
+        "INVALID_TOOL",
+        "ARGUMENT_INVALID",
+        "CONTEXT_OVERFLOW",
+        "BUDGET_EXHAUSTED",
+        "TIMEOUT",
+        "EXECUTION_ERROR"
+      ],
+      "title": "AttemptErrorCode",
+      "type": "string"
+    },
+    "AttemptStatus": {
+      "enum": [
+        "completed",
+        "invalid_response",
+        "timeout",
+        "execution_error"
+      ],
+      "title": "AttemptStatus",
+      "type": "string"
+    },
+    "CalculateArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "title": "Left",
+          "type": "number"
+        },
+        "operation": {
+          "$ref": "#/$defs/CalculationOperation"
+        },
+        "right": {
+          "title": "Right",
+          "type": "number"
+        }
+      },
+      "required": [
+        "operation",
+        "left",
+        "right"
+      ],
+      "title": "CalculateArgs",
+      "type": "object"
+    },
+    "CalculateCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/CalculateArgs"
+        },
+        "tool": {
+          "const": "calculate",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "CalculateCall",
+      "type": "object"
+    },
+    "CalculationOperation": {
+      "enum": [
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "title": "CalculationOperation",
+      "type": "string"
+    },
+    "CallToolResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "answerability": {
+          "$ref": "#/$defs/Answerability"
+        },
+        "decision": {
+          "const": "CALL_TOOL",
+          "title": "Decision",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "const": "OK",
+          "default": "OK",
+          "title": "Status",
+          "type": "string"
+        },
+        "tool_call": {
+          "discriminator": {
+            "mapping": {
+              "calculate": "#/$defs/CalculateCall",
+              "get_record": "#/$defs/GetRecordCall",
+              "lookup_status": "#/$defs/LookupStatusCall",
+              "search_records": "#/$defs/SearchRecordsCall"
+            },
+            "propertyName": "tool"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SearchRecordsCall"
+            },
+            {
+              "$ref": "#/$defs/GetRecordCall"
+            },
+            {
+              "$ref": "#/$defs/CalculateCall"
+            },
+            {
+              "$ref": "#/$defs/LookupStatusCall"
+            }
+          ],
+          "title": "Tool Call"
+        }
+      },
+      "required": [
+        "decision",
+        "answerability",
+        "tool_call"
+      ],
+      "title": "CallToolResponse",
+      "type": "object"
+    },
+    "EvidenceClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "minLength": 1,
+          "title": "Claim",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim"
+      ],
+      "title": "EvidenceClaim",
+      "type": "object"
+    },
+    "GetRecordArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id"
+      ],
+      "title": "GetRecordArgs",
+      "type": "object"
+    },
+    "GetRecordCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/GetRecordArgs"
+        },
+        "tool": {
+          "const": "get_record",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "GetRecordCall",
+      "type": "object"
+    },
+    "LookupStatusArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "subject_id": {
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject_id"
+      ],
+      "title": "LookupStatusArgs",
+      "type": "object"
+    },
+    "LookupStatusCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/LookupStatusArgs"
+        },
+        "tool": {
+          "const": "lookup_status",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "LookupStatusCall",
+      "type": "object"
+    },
+    "ParseFailure": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/AttemptErrorCode"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ParseFailure",
+      "type": "object"
+    },
+    "RefuseResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "answerability": {
+          "$ref": "#/$defs/Answerability"
+        },
+        "decision": {
+          "const": "REFUSE",
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "const": "OK",
+          "default": "OK",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "answerability",
+        "reason"
+      ],
+      "title": "RefuseResponse",
+      "type": "object"
+    },
+    "RespondResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "minLength": 1,
+          "title": "Answer",
+          "type": "string"
+        },
+        "answerability": {
+          "$ref": "#/$defs/Answerability"
+        },
+        "citations": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "claims": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceClaim"
+          },
+          "title": "Claims",
+          "type": "array"
+        },
+        "decision": {
+          "const": "RESPOND",
+          "title": "Decision",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "const": "OK",
+          "default": "OK",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "answerability",
+        "answer"
+      ],
+      "title": "RespondResponse",
+      "type": "object"
+    },
+    "SearchRecordsArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of Date"
+        },
+        "limit": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "query": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "SearchRecordsArgs",
+      "type": "object"
+    },
+    "SearchRecordsCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/SearchRecordsArgs"
+        },
+        "tool": {
+          "const": "search_records",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "SearchRecordsCall",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "minLength": 1,
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "case_id": {
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "family_id": {
+      "minLength": 1,
+      "title": "Family Id",
+      "type": "string"
+    },
+    "parse_failure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ParseFailure"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "parsed_response": {
+      "anyOf": [
+        {
+          "discriminator": {
+            "mapping": {
+              "ASK_CLARIFICATION": "#/$defs/AskClarificationResponse",
+              "CALL_TOOL": "#/$defs/CallToolResponse",
+              "REFUSE": "#/$defs/RefuseResponse",
+              "RESPOND": "#/$defs/RespondResponse"
+            },
+            "propertyName": "decision"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/RespondResponse"
+            },
+            {
+              "$ref": "#/$defs/CallToolResponse"
+            },
+            {
+              "$ref": "#/$defs/AskClarificationResponse"
+            },
+            {
+              "$ref": "#/$defs/RefuseResponse"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parsed Response"
+    },
+    "raw_output": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Output"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime_error_code": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AttemptErrorCode"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/AttemptStatus"
+    }
+  },
+  "required": [
+    "attempt_id",
+    "run_id",
+    "case_id",
+    "family_id",
+    "status"
+  ],
+  "title": "AttemptRecord",
+  "type": "object"
+}

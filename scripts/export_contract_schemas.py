@@ -18,6 +18,13 @@ from morena_r.contracts.actions import (  # noqa: E402
     ToolCall,
     ToolResult,
 )
+from morena_r.contracts.evaluation import (  # noqa: E402
+    AttemptRecord,
+    EvalCase,
+    EvalGold,
+    EvalInput,
+    RunSummary,
+)
 from morena_r.contracts.scoring import ScoreRecord  # noqa: E402
 
 
@@ -30,6 +37,11 @@ schemas = {
         ToolCall
     ).json_schema(),
     "tool_result.schema.json": ToolResult.model_json_schema(),
+    "eval_input.schema.json": EvalInput.model_json_schema(),
+    "eval_gold.schema.json": EvalGold.model_json_schema(),
+    "eval_case.schema.json": EvalCase.model_json_schema(),
+    "attempt_record.schema.json": AttemptRecord.model_json_schema(),
+    "run_summary.schema.json": RunSummary.model_json_schema(),
 }
 
 

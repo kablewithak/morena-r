@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "ToolName": {
+      "enum": [
+        "search_records",
+        "get_record",
+        "calculate",
+        "lookup_status"
+      ],
+      "title": "ToolName",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "available_tools": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ToolName"
+      },
+      "title": "Available Tools",
+      "type": "array"
+    },
+    "case_id": {
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "family_id": {
+      "minLength": 1,
+      "title": "Family Id",
+      "type": "string"
+    },
+    "language": {
+      "minLength": 1,
+      "title": "Language",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "user_message": {
+      "maxLength": 20000,
+      "minLength": 1,
+      "title": "User Message",
+      "type": "string"
+    }
+  },
+  "required": [
+    "case_id",
+    "family_id",
+    "language",
+    "user_message"
+  ],
+  "title": "EvalInput",
+  "type": "object"
+}

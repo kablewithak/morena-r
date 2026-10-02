@@ -1,0 +1,72 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attempted_cases": {
+      "minimum": 0,
+      "title": "Attempted Cases",
+      "type": "integer"
+    },
+    "case_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Case Ids",
+      "type": "array"
+    },
+    "completed": {
+      "minimum": 0,
+      "title": "Completed",
+      "type": "integer"
+    },
+    "execution_errors": {
+      "minimum": 0,
+      "title": "Execution Errors",
+      "type": "integer"
+    },
+    "expected_cases": {
+      "minimum": 0,
+      "title": "Expected Cases",
+      "type": "integer"
+    },
+    "invalid_responses": {
+      "minimum": 0,
+      "title": "Invalid Responses",
+      "type": "integer"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "score_rows": {
+      "minimum": 0,
+      "title": "Score Rows",
+      "type": "integer"
+    },
+    "timeouts": {
+      "minimum": 0,
+      "title": "Timeouts",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "run_id",
+    "expected_cases",
+    "attempted_cases",
+    "completed",
+    "invalid_responses",
+    "timeouts",
+    "execution_errors",
+    "score_rows",
+    "case_ids"
+  ],
+  "title": "RunSummary",
+  "type": "object"
+}

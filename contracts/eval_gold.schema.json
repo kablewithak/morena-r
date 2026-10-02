@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "Answerability": {
+      "enum": [
+        "SUPPORTED",
+        "UNSUPPORTED",
+        "CONFLICTING",
+        "INSUFFICIENT_CONTEXT",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Answerability",
+      "type": "string"
+    },
+    "Decision": {
+      "enum": [
+        "RESPOND",
+        "CALL_TOOL",
+        "ASK_CLARIFICATION",
+        "REFUSE"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "ToolName": {
+      "enum": [
+        "search_records",
+        "get_record",
+        "calculate",
+        "lookup_status"
+      ],
+      "title": "ToolName",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "expected_answerability": {
+      "$ref": "#/$defs/Answerability"
+    },
+    "expected_decision": {
+      "$ref": "#/$defs/Decision"
+    },
+    "expected_tool": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolName"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "case_id",
+    "expected_decision",
+    "expected_answerability"
+  ],
+  "title": "EvalGold",
+  "type": "object"
+}

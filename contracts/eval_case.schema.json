@@ -1,0 +1,174 @@
+{
+  "$defs": {
+    "Answerability": {
+      "enum": [
+        "SUPPORTED",
+        "UNSUPPORTED",
+        "CONFLICTING",
+        "INSUFFICIENT_CONTEXT",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Answerability",
+      "type": "string"
+    },
+    "Decision": {
+      "enum": [
+        "RESPOND",
+        "CALL_TOOL",
+        "ASK_CLARIFICATION",
+        "REFUSE"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "EvalGold": {
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {
+          "minLength": 1,
+          "title": "Case Id",
+          "type": "string"
+        },
+        "expected_answerability": {
+          "$ref": "#/$defs/Answerability"
+        },
+        "expected_decision": {
+          "$ref": "#/$defs/Decision"
+        },
+        "expected_tool": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "case_id",
+        "expected_decision",
+        "expected_answerability"
+      ],
+      "title": "EvalGold",
+      "type": "object"
+    },
+    "EvalInput": {
+      "additionalProperties": false,
+      "properties": {
+        "available_tools": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ToolName"
+          },
+          "title": "Available Tools",
+          "type": "array"
+        },
+        "case_id": {
+          "minLength": 1,
+          "title": "Case Id",
+          "type": "string"
+        },
+        "family_id": {
+          "minLength": 1,
+          "title": "Family Id",
+          "type": "string"
+        },
+        "language": {
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "user_message": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "User Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "case_id",
+        "family_id",
+        "language",
+        "user_message"
+      ],
+      "title": "EvalInput",
+      "type": "object"
+    },
+    "ToolName": {
+      "enum": [
+        "search_records",
+        "get_record",
+        "calculate",
+        "lookup_status"
+      ],
+      "title": "ToolName",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "gold": {
+      "$ref": "#/$defs/EvalGold"
+    },
+    "input": {
+      "$ref": "#/$defs/EvalInput"
+    },
+    "license": {
+      "minLength": 1,
+      "title": "License",
+      "type": "string"
+    },
+    "provenance": {
+      "minLength": 1,
+      "title": "Provenance",
+      "type": "string"
+    },
+    "review_status": {
+      "minLength": 1,
+      "title": "Review Status",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "split": {
+      "const": "development_pilot",
+      "default": "development_pilot",
+      "title": "Split",
+      "type": "string"
+    }
+  },
+  "required": [
+    "input",
+    "gold",
+    "source",
+    "provenance",
+    "license",
+    "review_status"
+  ],
+  "title": "EvalCase",
+  "type": "object"
+}
