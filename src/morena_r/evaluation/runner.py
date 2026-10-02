@@ -13,9 +13,7 @@ from morena_r.contracts.evaluation import (
     RunSummary,
 )
 from morena_r.contracts.scoring import ScoreRecord
-from morena_r.evaluation.parser import (
-    parse_model_response,
-)
+from morena_r.evaluation.parser import parse_model_response
 from morena_r.scoring.deterministic import (
     ScoreContext,
     score_attempt,
@@ -27,6 +25,14 @@ class ModelTimeoutError(TimeoutError):
 
 
 class ModelExecutionError(RuntimeError):
+    pass
+
+
+class ModelContextOverflowError(ModelExecutionError):
+    pass
+
+
+class ModelBudgetExhaustedError(ModelExecutionError):
     pass
 
 
@@ -65,6 +71,8 @@ class EvaluationRunner:
     def run(
         self,
         cases: tuple[EvalCase, ...],
+        *,
+        existing_attempts: tuple[AttemptRecord, ...] = (),
     ) -> EvaluationRunResult:
         case_ids = tuple(
             case.input.case_id
@@ -75,6 +83,38 @@ class EvaluationRunner:
             raise ValueError(
                 "Evaluation run contains duplicate case IDs."
             )
+
+        case_by_id = {
+            case.input.case_id: case
+            for case in cases
+        }
+
+        existing_by_case: dict[str, AttemptRecord] = {}
+
+        for attempt in existing_attempts:
+            if attempt.run_id != self._config.run_id:
+                raise ValueError(
+                    "Existing attempt belongs to a different run."
+                )
+
+            if attempt.case_id not in case_by_id:
+                raise ValueError(
+                    "Existing attempt references an unknown case."
+                )
+
+            if attempt.case_id in existing_by_case:
+                raise ValueError(
+                    "Duplicate existing attempt for case."
+                )
+
+            case = case_by_id[attempt.case_id]
+
+            if attempt.family_id != case.input.family_id:
+                raise ValueError(
+                    "Existing attempt family does not match case."
+                )
+
+            existing_by_case[attempt.case_id] = attempt
 
         attempts: list[AttemptRecord] = []
         scores: list[ScoreRecord] = []
@@ -88,7 +128,12 @@ class EvaluationRunner:
         )
 
         for case in cases:
-            attempt = self._run_case(case)
+            attempt = existing_by_case.get(
+                case.input.case_id
+            )
+
+            if attempt is None:
+                attempt = self._run_case(case)
 
             attempts.append(attempt)
 
@@ -148,6 +193,7 @@ class EvaluationRunner:
             raw_output = self._adapter.generate(
                 case.input
             )
+
         except ModelTimeoutError:
             return AttemptRecord(
                 attempt_id=attempt_id,
@@ -159,15 +205,38 @@ class EvaluationRunner:
                     AttemptErrorCode.TIMEOUT
                 ),
             )
+
+        except ModelContextOverflowError:
+            return AttemptRecord(
+                attempt_id=attempt_id,
+                run_id=self._config.run_id,
+                case_id=case.input.case_id,
+                family_id=case.input.family_id,
+                status=AttemptStatus.EXECUTION_ERROR,
+                runtime_error_code=(
+                    AttemptErrorCode.CONTEXT_OVERFLOW
+                ),
+            )
+
+        except ModelBudgetExhaustedError:
+            return AttemptRecord(
+                attempt_id=attempt_id,
+                run_id=self._config.run_id,
+                case_id=case.input.case_id,
+                family_id=case.input.family_id,
+                status=AttemptStatus.EXECUTION_ERROR,
+                runtime_error_code=(
+                    AttemptErrorCode.BUDGET_EXHAUSTED
+                ),
+            )
+
         except ModelExecutionError:
             return AttemptRecord(
                 attempt_id=attempt_id,
                 run_id=self._config.run_id,
                 case_id=case.input.case_id,
                 family_id=case.input.family_id,
-                status=(
-                    AttemptStatus.EXECUTION_ERROR
-                ),
+                status=AttemptStatus.EXECUTION_ERROR,
                 runtime_error_code=(
                     AttemptErrorCode.EXECUTION_ERROR
                 ),
@@ -179,17 +248,13 @@ class EvaluationRunner:
                 run_id=self._config.run_id,
                 case_id=case.input.case_id,
                 family_id=case.input.family_id,
-                status=(
-                    AttemptStatus.EXECUTION_ERROR
-                ),
+                status=AttemptStatus.EXECUTION_ERROR,
                 runtime_error_code=(
                     AttemptErrorCode.EXECUTION_ERROR
                 ),
             )
 
-        parsed = parse_model_response(
-            raw_output
-        )
+        parsed = parse_model_response(raw_output)
 
         if parsed.response is not None:
             return AttemptRecord(

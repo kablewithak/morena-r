@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Literal
 
@@ -11,6 +12,7 @@ from morena_r.contracts.actions import (
     ModelResponse,
     NonEmptyStr,
     StrictContract,
+    ToolCall,
     ToolName,
 )
 
@@ -33,15 +35,15 @@ class AttemptErrorCode(StrEnum):
     EXECUTION_ERROR = "EXECUTION_ERROR"
 
 
-class EvalInput(StrictContract):
-    schema_version: Literal["1.0"] = "1.0"
+class EvalMessage(StrictContract):
+    role: Literal[
+        "system",
+        "user",
+        "assistant",
+        "tool",
+    ]
 
-    case_id: NonEmptyStr
-    family_id: NonEmptyStr
-
-    language: NonEmptyStr
-
-    user_message: Annotated[
+    content: Annotated[
         str,
         Field(
             min_length=1,
@@ -49,7 +51,118 @@ class EvalInput(StrictContract):
         ),
     ]
 
+
+class EvidenceDocument(StrictContract):
+    document_id: NonEmptyStr
+    version: NonEmptyStr
+
+    content: Annotated[
+        str,
+        Field(
+            min_length=1,
+            max_length=20_000,
+        ),
+    ]
+
+    observed_at_utc: datetime
+    authoritative: bool = True
+
+    @model_validator(mode="after")
+    def validate_timezone(self) -> "EvidenceDocument":
+        if (
+            self.observed_at_utc.tzinfo is None
+            or self.observed_at_utc.utcoffset() is None
+        ):
+            raise ValueError(
+                "Evidence timestamps must be timezone-aware."
+            )
+
+        return self
+
+
+class EvalInput(StrictContract):
+    schema_version: Literal["1.0"] = "1.0"
+
+    case_id: NonEmptyStr
+    family_id: NonEmptyStr
+
+    languages: tuple[NonEmptyStr, ...] = Field(
+        min_length=1,
+    )
+
+    messages: tuple[EvalMessage, ...] = Field(
+        min_length=1,
+    )
+
+    evidence: tuple[EvidenceDocument, ...] = ()
+
     available_tools: tuple[ToolName, ...] = ()
+    permitted_tools: tuple[ToolName, ...] = ()
+
+    evaluation_time_utc: datetime
+
+    @model_validator(mode="after")
+    def validate_input_state(self) -> "EvalInput":
+        if (
+            self.evaluation_time_utc.tzinfo is None
+            or self.evaluation_time_utc.utcoffset() is None
+        ):
+            raise ValueError(
+                "evaluation_time_utc must be timezone-aware."
+            )
+
+        if len(set(self.languages)) != len(self.languages):
+            raise ValueError(
+                "languages must not contain duplicates."
+            )
+
+        if not any(
+            message.role == "user"
+            for message in self.messages
+        ):
+            raise ValueError(
+                "EvalInput requires at least one user message."
+            )
+
+        if (
+            len(set(self.available_tools))
+            != len(self.available_tools)
+        ):
+            raise ValueError(
+                "available_tools must not contain duplicates."
+            )
+
+        if (
+            len(set(self.permitted_tools))
+            != len(self.permitted_tools)
+        ):
+            raise ValueError(
+                "permitted_tools must not contain duplicates."
+            )
+
+        if not set(self.permitted_tools).issubset(
+            set(self.available_tools)
+        ):
+            raise ValueError(
+                "Permitted tools must be available tools."
+            )
+
+        evidence_ids = tuple(
+            document.document_id
+            for document in self.evidence
+        )
+
+        if len(set(evidence_ids)) != len(evidence_ids):
+            raise ValueError(
+                "Evidence document IDs must be unique."
+            )
+
+        return self
+
+
+class GoldClaim(StrictContract):
+    claim: NonEmptyStr
+    evidence_refs: tuple[NonEmptyStr, ...] = ()
 
 
 class EvalGold(StrictContract):
@@ -60,24 +173,38 @@ class EvalGold(StrictContract):
     expected_decision: Decision
     expected_answerability: Answerability
 
-    expected_tool: ToolName | None = None
+    permitted_tools: tuple[ToolName, ...] = ()
+
+    expected_tool_call: ToolCall | None = None
+
+    expected_claims: tuple[GoldClaim, ...] = ()
+    rubric: NonEmptyStr
 
     @model_validator(mode="after")
     def validate_tool_expectation(self) -> "EvalGold":
         if (
             self.expected_decision == Decision.CALL_TOOL
-            and self.expected_tool is None
+            and self.expected_tool_call is None
         ):
             raise ValueError(
-                "CALL_TOOL gold requires expected_tool."
+                "CALL_TOOL gold requires expected_tool_call."
             )
 
         if (
             self.expected_decision != Decision.CALL_TOOL
-            and self.expected_tool is not None
+            and self.expected_tool_call is not None
         ):
             raise ValueError(
-                "expected_tool is only valid for CALL_TOOL gold."
+                "expected_tool_call is only valid for CALL_TOOL gold."
+            )
+
+        if (
+            self.expected_tool_call is not None
+            and ToolName(self.expected_tool_call.tool)
+            not in self.permitted_tools
+        ):
+            raise ValueError(
+                "Expected tool call must be permitted."
             )
 
         return self
@@ -97,10 +224,17 @@ class EvalCase(StrictContract):
     review_status: NonEmptyStr
 
     @model_validator(mode="after")
-    def validate_case_identity(self) -> "EvalCase":
+    def validate_case_state(self) -> "EvalCase":
         if self.input.case_id != self.gold.case_id:
             raise ValueError(
                 "EvalInput and EvalGold case IDs must match."
+            )
+
+        if set(self.input.permitted_tools) != set(
+            self.gold.permitted_tools
+        ):
+            raise ValueError(
+                "Input and gold permission state must match."
             )
 
         return self
@@ -190,28 +324,57 @@ class AttemptRecord(StrictContract):
                     "Invalid response cannot contain runtime_error_code."
                 )
 
-        if self.status in {
-            AttemptStatus.TIMEOUT,
-            AttemptStatus.EXECUTION_ERROR,
-        }:
+        if self.status == AttemptStatus.TIMEOUT:
             if self.raw_output is not None:
                 raise ValueError(
-                    "Runtime failure cannot contain raw_output."
+                    "Timeout cannot contain raw_output."
                 )
 
             if self.parsed_response is not None:
                 raise ValueError(
-                    "Runtime failure cannot contain parsed_response."
+                    "Timeout cannot contain parsed_response."
                 )
 
             if self.parse_failure is not None:
                 raise ValueError(
-                    "Runtime failure cannot contain parse_failure."
+                    "Timeout cannot contain parse_failure."
+                )
+
+            if (
+                self.runtime_error_code
+                != AttemptErrorCode.TIMEOUT
+            ):
+                raise ValueError(
+                    "Timeout requires TIMEOUT error code."
+                )
+
+        if self.status == AttemptStatus.EXECUTION_ERROR:
+            if self.raw_output is not None:
+                raise ValueError(
+                    "Execution failure cannot contain raw_output."
+                )
+
+            if self.parsed_response is not None:
+                raise ValueError(
+                    "Execution failure cannot contain parsed_response."
+                )
+
+            if self.parse_failure is not None:
+                raise ValueError(
+                    "Execution failure cannot contain parse_failure."
                 )
 
             if self.runtime_error_code is None:
                 raise ValueError(
-                    "Runtime failure requires runtime_error_code."
+                    "Execution failure requires runtime_error_code."
+                )
+
+            if (
+                self.runtime_error_code
+                == AttemptErrorCode.TIMEOUT
+            ):
+                raise ValueError(
+                    "TIMEOUT must use timeout attempt status."
                 )
 
         return self

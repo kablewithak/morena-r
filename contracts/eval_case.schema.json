@@ -11,6 +11,58 @@
       "title": "Answerability",
       "type": "string"
     },
+    "CalculateArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "title": "Left",
+          "type": "number"
+        },
+        "operation": {
+          "$ref": "#/$defs/CalculationOperation"
+        },
+        "right": {
+          "title": "Right",
+          "type": "number"
+        }
+      },
+      "required": [
+        "operation",
+        "left",
+        "right"
+      ],
+      "title": "CalculateArgs",
+      "type": "object"
+    },
+    "CalculateCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/CalculateArgs"
+        },
+        "tool": {
+          "const": "calculate",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "CalculateCall",
+      "type": "object"
+    },
+    "CalculationOperation": {
+      "enum": [
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "title": "CalculationOperation",
+      "type": "string"
+    },
     "Decision": {
       "enum": [
         "RESPOND",
@@ -32,19 +84,63 @@
         "expected_answerability": {
           "$ref": "#/$defs/Answerability"
         },
+        "expected_claims": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/GoldClaim"
+          },
+          "title": "Expected Claims",
+          "type": "array"
+        },
         "expected_decision": {
           "$ref": "#/$defs/Decision"
         },
-        "expected_tool": {
+        "expected_tool_call": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ToolName"
+              "discriminator": {
+                "mapping": {
+                  "calculate": "#/$defs/CalculateCall",
+                  "get_record": "#/$defs/GetRecordCall",
+                  "lookup_status": "#/$defs/LookupStatusCall",
+                  "search_records": "#/$defs/SearchRecordsCall"
+                },
+                "propertyName": "tool"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/SearchRecordsCall"
+                },
+                {
+                  "$ref": "#/$defs/GetRecordCall"
+                },
+                {
+                  "$ref": "#/$defs/CalculateCall"
+                },
+                {
+                  "$ref": "#/$defs/LookupStatusCall"
+                }
+              ]
             },
             {
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "title": "Expected Tool Call"
+        },
+        "permitted_tools": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ToolName"
+          },
+          "title": "Permitted Tools",
+          "type": "array"
+        },
+        "rubric": {
+          "minLength": 1,
+          "title": "Rubric",
+          "type": "string"
         },
         "schema_version": {
           "const": "1.0",
@@ -56,7 +152,8 @@
       "required": [
         "case_id",
         "expected_decision",
-        "expected_answerability"
+        "expected_answerability",
+        "rubric"
       ],
       "title": "EvalGold",
       "type": "object"
@@ -77,36 +174,277 @@
           "title": "Case Id",
           "type": "string"
         },
+        "evaluation_time_utc": {
+          "format": "date-time",
+          "title": "Evaluation Time Utc",
+          "type": "string"
+        },
+        "evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceDocument"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
         "family_id": {
           "minLength": 1,
           "title": "Family Id",
           "type": "string"
         },
-        "language": {
-          "minLength": 1,
-          "title": "Language",
-          "type": "string"
+        "languages": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Languages",
+          "type": "array"
+        },
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/EvalMessage"
+          },
+          "minItems": 1,
+          "title": "Messages",
+          "type": "array"
+        },
+        "permitted_tools": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ToolName"
+          },
+          "title": "Permitted Tools",
+          "type": "array"
         },
         "schema_version": {
           "const": "1.0",
           "default": "1.0",
           "title": "Schema Version",
           "type": "string"
-        },
-        "user_message": {
-          "maxLength": 20000,
-          "minLength": 1,
-          "title": "User Message",
-          "type": "string"
         }
       },
       "required": [
         "case_id",
         "family_id",
-        "language",
-        "user_message"
+        "languages",
+        "messages",
+        "evaluation_time_utc"
       ],
       "title": "EvalInput",
+      "type": "object"
+    },
+    "EvalMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "system",
+            "user",
+            "assistant",
+            "tool"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "EvalMessage",
+      "type": "object"
+    },
+    "EvidenceDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "authoritative": {
+          "default": true,
+          "title": "Authoritative",
+          "type": "boolean"
+        },
+        "content": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "document_id": {
+          "minLength": 1,
+          "title": "Document Id",
+          "type": "string"
+        },
+        "observed_at_utc": {
+          "format": "date-time",
+          "title": "Observed At Utc",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "version",
+        "content",
+        "observed_at_utc"
+      ],
+      "title": "EvidenceDocument",
+      "type": "object"
+    },
+    "GetRecordArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id"
+      ],
+      "title": "GetRecordArgs",
+      "type": "object"
+    },
+    "GetRecordCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/GetRecordArgs"
+        },
+        "tool": {
+          "const": "get_record",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "GetRecordCall",
+      "type": "object"
+    },
+    "GoldClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "minLength": 1,
+          "title": "Claim",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim"
+      ],
+      "title": "GoldClaim",
+      "type": "object"
+    },
+    "LookupStatusArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "subject_id": {
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject_id"
+      ],
+      "title": "LookupStatusArgs",
+      "type": "object"
+    },
+    "LookupStatusCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/LookupStatusArgs"
+        },
+        "tool": {
+          "const": "lookup_status",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "LookupStatusCall",
+      "type": "object"
+    },
+    "SearchRecordsArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of Date"
+        },
+        "limit": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "query": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "SearchRecordsArgs",
+      "type": "object"
+    },
+    "SearchRecordsCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/SearchRecordsArgs"
+        },
+        "tool": {
+          "const": "search_records",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "SearchRecordsCall",
       "type": "object"
     },
     "ToolName": {

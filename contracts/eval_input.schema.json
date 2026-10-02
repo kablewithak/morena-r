@@ -1,5 +1,71 @@
 {
   "$defs": {
+    "EvalMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "system",
+            "user",
+            "assistant",
+            "tool"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "EvalMessage",
+      "type": "object"
+    },
+    "EvidenceDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "authoritative": {
+          "default": true,
+          "title": "Authoritative",
+          "type": "boolean"
+        },
+        "content": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "document_id": {
+          "minLength": 1,
+          "title": "Document Id",
+          "type": "string"
+        },
+        "observed_at_utc": {
+          "format": "date-time",
+          "title": "Observed At Utc",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "version",
+        "content",
+        "observed_at_utc"
+      ],
+      "title": "EvidenceDocument",
+      "type": "object"
+    },
     "ToolName": {
       "enum": [
         "search_records",
@@ -26,34 +92,62 @@
       "title": "Case Id",
       "type": "string"
     },
+    "evaluation_time_utc": {
+      "format": "date-time",
+      "title": "Evaluation Time Utc",
+      "type": "string"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceDocument"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
     "family_id": {
       "minLength": 1,
       "title": "Family Id",
       "type": "string"
     },
-    "language": {
-      "minLength": 1,
-      "title": "Language",
-      "type": "string"
+    "languages": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Languages",
+      "type": "array"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/EvalMessage"
+      },
+      "minItems": 1,
+      "title": "Messages",
+      "type": "array"
+    },
+    "permitted_tools": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ToolName"
+      },
+      "title": "Permitted Tools",
+      "type": "array"
     },
     "schema_version": {
       "const": "1.0",
       "default": "1.0",
       "title": "Schema Version",
       "type": "string"
-    },
-    "user_message": {
-      "maxLength": 20000,
-      "minLength": 1,
-      "title": "User Message",
-      "type": "string"
     }
   },
   "required": [
     "case_id",
     "family_id",
-    "language",
-    "user_message"
+    "languages",
+    "messages",
+    "evaluation_time_utc"
   ],
   "title": "EvalInput",
   "type": "object"
