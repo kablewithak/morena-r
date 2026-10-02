@@ -1,43 +1,44 @@
 {
-    "schema_version":  "1.0",
-    "status":  "PINNED_METADATA_NOT_YET_LOADED",
-    "captured_utc":  "2026-10-01T19:22:15.2051372Z",
-    "primary_model":  {
-                          "provider":  "Vambo AI",
-                          "repo":  "vamboai/morena-1.5b-instruct",
-                          "revision":  "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
-                          "role":  "primary_instruct_subject",
-                          "weight_format":  "safetensors",
-                          "weights_downloaded":  false,
-                          "weights_verified":  false
-                      },
-    "base_comparator":  {
-                            "repo":  "vamboai/morena-1.5b-base",
-                            "revision":  "e98192f5f3ddb97d118e107ece37399f3cbe84d2",
-                            "role":  "base_diagnostic_comparator"
-                        },
-    "upstream_gguf":  {
-                          "repo":  "vamboai/morena-1.5b-instruct-gguf",
-                          "revision":  "ed64de7262b6edbe1af14c340ed4ea368a36349d",
-                          "role":  "upstream_deployment_comparator"
-                      },
-    "local_inspection":  {
-                             "cached_files":  [
-                                                  "README.md",
-                                                  "config.json",
-                                                  "tokenizer.json",
-                                                  "modeling_morena.py",
-                                                  "load_example.py",
-                                                  "SHA256SUMS"
-                                              ],
-                             "integrity_manifest":  "data/manifests/upstream_file_integrity_g0.json",
-                             "cache_is_git_ignored":  true
-                         },
-    "claims":  {
-                   "baseline_reproduced":  false,
-                   "inference_verified":  false,
-                   "tokenizer_verified":  false,
-                   "prompt_format_verified":  false,
-                   "improvement_claimed":  false
-               }
+  "schema_version": "1.0",
+  "status": "G1_INFERENCE_VERIFIED",
+  "captured_utc": "2026-10-01T19:22:15.2051372Z",
+  "primary_model": {
+    "provider": "Vambo AI",
+    "repo": "vamboai/morena-1.5b-instruct",
+    "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+    "role": "primary_instruct_subject",
+    "weight_format": "safetensors",
+    "weights_downloaded": true,
+    "weights_verified": true
+  },
+  "base_comparator": {
+    "repo": "vamboai/morena-1.5b-base",
+    "revision": "e98192f5f3ddb97d118e107ece37399f3cbe84d2",
+    "role": "base_diagnostic_comparator"
+  },
+  "upstream_gguf": {
+    "repo": "vamboai/morena-1.5b-instruct-gguf",
+    "revision": "ed64de7262b6edbe1af14c340ed4ea368a36349d",
+    "role": "upstream_deployment_comparator"
+  },
+  "local_inspection": {
+    "cached_files": [
+      "README.md",
+      "config.json",
+      "tokenizer.json",
+      "modeling_morena.py",
+      "load_example.py",
+      "SHA256SUMS"
+    ],
+    "integrity_manifest": "data/manifests/upstream_file_integrity_g0.json",
+    "cache_is_git_ignored": true
+  },
+  "claims": {
+    "baseline_reproduced": false,
+    "inference_verified": true,
+    "tokenizer_verified": true,
+    "prompt_format_verified": true,
+    "improvement_claimed": false
+  },
+  "updated_utc": "2026-10-02T17:14:11.452111+00:00"
 }

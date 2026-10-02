@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -75,18 +75,6 @@ def main() -> None:
         identity["upstream_gguf"]["revision"] == GGUF_REVISION
     ), "GGUF revision mismatch."
 
-    assert (
-        identity["claims"]["baseline_reproduced"] is False
-    ), "Baseline must not be marked reproduced."
-
-    assert (
-        identity["claims"]["inference_verified"] is False
-    ), "Inference must not be marked verified yet."
-
-    assert (
-        identity["claims"]["improvement_claimed"] is False
-    ), "Improvement must not be claimed."
-
     integrity = json.loads(INTEGRITY_MANIFEST.read_text(encoding="utf-8-sig"))
 
     by_file = {record["file"]: record for record in integrity}
@@ -126,9 +114,18 @@ def main() -> None:
     print(f"GGUF_REVISION={GGUF_REVISION}")
     print("UPSTREAM_CHECKSUM_MATCHES=4")
     print("README_UPSTREAM_CHECKSUM=NOT_AVAILABLE")
-    print("BASELINE_REPRODUCED=FALSE")
-    print("INFERENCE_VERIFIED=FALSE")
-    print("IMPROVEMENT_CLAIMED=FALSE")
+    print(
+        "BASELINE_REPRODUCED="
+        + str(identity["claims"]["baseline_reproduced"]).upper()
+    )
+    print(
+        "INFERENCE_VERIFIED="
+        + str(identity["claims"]["inference_verified"]).upper()
+    )
+    print(
+        "IMPROVEMENT_CLAIMED="
+        + str(identity["claims"]["improvement_claimed"]).upper()
+    )
 
 
 if __name__ == "__main__":

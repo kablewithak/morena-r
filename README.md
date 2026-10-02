@@ -20,10 +20,10 @@ Validated research state:
 - pinned `model.safetensors` SHA-256 verification: PASS
 - checkpoint tensor inventory: 254 tensors
 - strict checkpoint-to-architecture state-dict load: PASS
+- bounded native-contract CPU inference smoke: PASS
 
 Not yet established:
 
-- inference smoke verification
 - reproducible B0 baseline
 - intervention results
 - protected evaluation
