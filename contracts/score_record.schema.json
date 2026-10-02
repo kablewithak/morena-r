@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "FailureLabel": {
+      "enum": [
+        "extrinsic_claim",
+        "ignored_evidence",
+        "wrong_span",
+        "partial_support",
+        "wrong_answerability",
+        "conflict_error",
+        "citation_mismatch",
+        "memory_override",
+        "missed_call",
+        "unnecessary_call",
+        "wrong_tool",
+        "wrong_argument",
+        "invalid_schema",
+        "missing_clarification",
+        "loop",
+        "ignored_result",
+        "false_refusal",
+        "unsafe_compliance",
+        "inconsistent_handling",
+        "excessive_disclaimer",
+        "benign_misclassification",
+        "decision_flip",
+        "implausible_code_switching",
+        "entity_corruption",
+        "register_error",
+        "semantic_translation_loss",
+        "language_drift",
+        "overflow",
+        "timeout",
+        "oom",
+        "numerical_error",
+        "corrupted_artifact",
+        "parser_failure",
+        "incomplete_run",
+        "conversion_mismatch",
+        "quantization_policy_shift",
+        "language_regression",
+        "memory_overrun",
+        "unstable_latency"
+      ],
+      "title": "FailureLabel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt_status": {
+      "minLength": 1,
+      "title": "Attempt Status",
+      "type": "string"
+    },
+    "case_id": {
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "dataset_hash": {
+      "minLength": 1,
+      "title": "Dataset Hash",
+      "type": "string"
+    },
+    "eligible": {
+      "title": "Eligible",
+      "type": "boolean"
+    },
+    "evidence_refs": {
+      "default": [],
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "failure_labels": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/FailureLabel"
+      },
+      "title": "Failure Labels",
+      "type": "array"
+    },
+    "family_id": {
+      "minLength": 1,
+      "title": "Family Id",
+      "type": "string"
+    },
+    "metric_id": {
+      "minLength": 1,
+      "title": "Metric Id",
+      "type": "string"
+    },
+    "missing_reason": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Missing Reason"
+    },
+    "model_identity_hash": {
+      "minLength": 1,
+      "title": "Model Identity Hash",
+      "type": "string"
+    },
+    "review_status": {
+      "minLength": 1,
+      "title": "Review Status",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scorer_version": {
+      "minLength": 1,
+      "title": "Scorer Version",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    }
+  },
+  "required": [
+    "run_id",
+    "case_id",
+    "family_id",
+    "model_identity_hash",
+    "dataset_hash",
+    "scorer_version",
+    "metric_id",
+    "eligible",
+    "review_status",
+    "attempt_status"
+  ],
+  "title": "ScoreRecord",
+  "type": "object"
+}

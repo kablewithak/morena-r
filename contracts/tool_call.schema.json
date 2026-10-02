@@ -1,0 +1,202 @@
+{
+  "$defs": {
+    "CalculateArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "title": "Left",
+          "type": "number"
+        },
+        "operation": {
+          "$ref": "#/$defs/CalculationOperation"
+        },
+        "right": {
+          "title": "Right",
+          "type": "number"
+        }
+      },
+      "required": [
+        "operation",
+        "left",
+        "right"
+      ],
+      "title": "CalculateArgs",
+      "type": "object"
+    },
+    "CalculateCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/CalculateArgs"
+        },
+        "tool": {
+          "const": "calculate",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "CalculateCall",
+      "type": "object"
+    },
+    "CalculationOperation": {
+      "enum": [
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "title": "CalculationOperation",
+      "type": "string"
+    },
+    "GetRecordArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id"
+      ],
+      "title": "GetRecordArgs",
+      "type": "object"
+    },
+    "GetRecordCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/GetRecordArgs"
+        },
+        "tool": {
+          "const": "get_record",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "GetRecordCall",
+      "type": "object"
+    },
+    "LookupStatusArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "subject_id": {
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject_id"
+      ],
+      "title": "LookupStatusArgs",
+      "type": "object"
+    },
+    "LookupStatusCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/LookupStatusArgs"
+        },
+        "tool": {
+          "const": "lookup_status",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "LookupStatusCall",
+      "type": "object"
+    },
+    "SearchRecordsArgs": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of Date"
+        },
+        "limit": {
+          "default": 5,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "query": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "SearchRecordsArgs",
+      "type": "object"
+    },
+    "SearchRecordsCall": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/SearchRecordsArgs"
+        },
+        "tool": {
+          "const": "search_records",
+          "title": "Tool",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "arguments"
+      ],
+      "title": "SearchRecordsCall",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "calculate": "#/$defs/CalculateCall",
+      "get_record": "#/$defs/GetRecordCall",
+      "lookup_status": "#/$defs/LookupStatusCall",
+      "search_records": "#/$defs/SearchRecordsCall"
+    },
+    "propertyName": "tool"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/SearchRecordsCall"
+    },
+    {
+      "$ref": "#/$defs/GetRecordCall"
+    },
+    {
+      "$ref": "#/$defs/CalculateCall"
+    },
+    {
+      "$ref": "#/$defs/LookupStatusCall"
+    }
+  ]
+}

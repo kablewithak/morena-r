@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "CalculateData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "calculate",
+          "default": "calculate",
+          "title": "Kind",
+          "type": "string"
+        },
+        "result": {
+          "title": "Result",
+          "type": "number"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "CalculateData",
+      "type": "object"
+    },
+    "GetRecordData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "get_record",
+          "default": "get_record",
+          "title": "Kind",
+          "type": "string"
+        },
+        "record": {
+          "$ref": "#/$defs/RecordFixture"
+        }
+      },
+      "required": [
+        "record"
+      ],
+      "title": "GetRecordData",
+      "type": "object"
+    },
+    "LookupStatusData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "lookup_status",
+          "default": "lookup_status",
+          "title": "Kind",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/StatusFixture"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "LookupStatusData",
+      "type": "object"
+    },
+    "RecordFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "authoritative": {
+          "default": true,
+          "title": "Authoritative",
+          "type": "boolean"
+        },
+        "observed_at": {
+          "format": "date",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "text",
+        "observed_at"
+      ],
+      "title": "RecordFixture",
+      "type": "object"
+    },
+    "SearchRecordsData": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "search_records",
+          "default": "search_records",
+          "title": "Kind",
+          "type": "string"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/RecordFixture"
+          },
+          "title": "Records",
+          "type": "array"
+        }
+      },
+      "required": [
+        "records"
+      ],
+      "title": "SearchRecordsData",
+      "type": "object"
+    },
+    "StatusFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "observed_at": {
+          "format": "date",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "status": {
+          "minLength": 1,
+          "title": "Status",
+          "type": "string"
+        },
+        "subject_id": {
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject_id",
+        "status",
+        "observed_at"
+      ],
+      "title": "StatusFixture",
+      "type": "object"
+    },
+    "ToolErrorCode": {
+      "enum": [
+        "PARSE_ERROR",
+        "UNKNOWN_FIELD",
+        "INVALID_TOOL",
+        "ARGUMENT_INVALID",
+        "CONTEXT_OVERFLOW",
+        "BUDGET_EXHAUSTED",
+        "PERMISSION_DENIED",
+        "NOT_FOUND",
+        "TIMEOUT",
+        "MALFORMED_RESPONSE",
+        "STALE_DATA",
+        "STAGNATION"
+      ],
+      "title": "ToolErrorCode",
+      "type": "string"
+    },
+    "ToolName": {
+      "enum": [
+        "search_records",
+        "get_record",
+        "calculate",
+        "lookup_status"
+      ],
+      "title": "ToolName",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "call_id": {
+      "minLength": 1,
+      "title": "Call Id",
+      "type": "string"
+    },
+    "data": {
+      "anyOf": [
+        {
+          "discriminator": {
+            "mapping": {
+              "calculate": "#/$defs/CalculateData",
+              "get_record": "#/$defs/GetRecordData",
+              "lookup_status": "#/$defs/LookupStatusData",
+              "search_records": "#/$defs/SearchRecordsData"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SearchRecordsData"
+            },
+            {
+              "$ref": "#/$defs/GetRecordData"
+            },
+            {
+              "$ref": "#/$defs/CalculateData"
+            },
+            {
+              "$ref": "#/$defs/LookupStatusData"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolErrorCode"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "payload_hash": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Payload Hash"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "success": {
+      "title": "Success",
+      "type": "boolean"
+    },
+    "tool": {
+      "$ref": "#/$defs/ToolName"
+    }
+  },
+  "required": [
+    "call_id",
+    "tool",
+    "success"
+  ],
+  "title": "ToolResult",
+  "type": "object"
+}
