@@ -251,6 +251,42 @@ def test_timeout_is_runtime_missing_not_parser_failure() -> None:
 
     assert schema_score.eligible is False
     assert schema_score.value is None
+
+    action_score = next(
+        score
+        for score in result.scores
+        if score.metric_id == "action_correct"
+    )
+
+    assert action_score.eligible is True
+    assert action_score.value == 0.0
+
+    answerability_score = next(
+        score
+        for score in result.scores
+        if score.metric_id == "answerability_correct"
+    )
+
+    assert answerability_score.eligible is True
+    assert answerability_score.value == 0.0
+
+    action_score = next(
+        score
+        for score in result.scores
+        if score.metric_id == "action_correct"
+    )
+
+    assert action_score.eligible is True
+    assert action_score.value == 0.0
+
+    answerability_score = next(
+        score
+        for score in result.scores
+        if score.metric_id == "answerability_correct"
+    )
+
+    assert answerability_score.eligible is True
+    assert answerability_score.value == 0.0
     assert (
         FailureLabel.TIMEOUT
         in schema_score.failure_labels

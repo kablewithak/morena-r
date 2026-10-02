@@ -264,6 +264,7 @@ def write_run_bundle(
                 ),
                 "action": "model_attempt",
                 "status": attempt.status.value,
+                "elapsed_seconds": 0.0,
                 "artifact_ref": (
                     f"attempt:{attempt.attempt_id}"
                 ),

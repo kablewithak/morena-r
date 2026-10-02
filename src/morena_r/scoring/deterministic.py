@@ -167,21 +167,16 @@ def score_attempt(
     action_correct = ScoreRecord(
         **common,
         metric_id="action_correct",
-        eligible=runtime_missing is None,
+        eligible=True,
         value=(
-            None
-            if runtime_missing is not None
-            else (
-                1.0
-                if (
-                    response is not None
-                    and Decision(response.decision)
-                    == case.gold.expected_decision
-                )
-                else 0.0
+            1.0
+            if (
+                response is not None
+                and Decision(response.decision)
+                == case.gold.expected_decision
             )
+            else 0.0
         ),
-        missing_reason=runtime_missing,
         failure_labels=_action_failure_labels(
             case,
             attempt,
@@ -191,21 +186,16 @@ def score_attempt(
     answerability_correct = ScoreRecord(
         **common,
         metric_id="answerability_correct",
-        eligible=runtime_missing is None,
+        eligible=True,
         value=(
-            None
-            if runtime_missing is not None
-            else (
-                1.0
-                if (
-                    response is not None
-                    and response.answerability
-                    == case.gold.expected_answerability
-                )
-                else 0.0
+            1.0
+            if (
+                response is not None
+                and response.answerability
+                == case.gold.expected_answerability
             )
+            else 0.0
         ),
-        missing_reason=runtime_missing,
         failure_labels=(
             failure_labels
             if response is None
