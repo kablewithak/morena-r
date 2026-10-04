@@ -26,6 +26,7 @@ from morena_r.evaluation.runner import (
 )
 from morena_r.models.native_morena import (
     GenerationConfig,
+    RuntimeConfig,
 )
 
 
@@ -90,6 +91,7 @@ class B0SubprocessAdapter:
         worker_path: Path,
         generation_config: GenerationConfig,
         timeout_seconds: float,
+        runtime_config: RuntimeConfig | None = None,
     ) -> None:
         if timeout_seconds <= 0:
             raise ValueError(
@@ -105,6 +107,11 @@ class B0SubprocessAdapter:
         self._worker_path = worker_path
         self._generation_config = (
             generation_config
+        )
+        self._runtime_config = (
+            runtime_config
+            if runtime_config is not None
+            else RuntimeConfig()
         )
         self._timeout_seconds = (
             timeout_seconds
@@ -146,6 +153,9 @@ class B0SubprocessAdapter:
             ),
             "generation": asdict(
                 self._generation_config
+            ),
+            "runtime": asdict(
+                self._runtime_config
             ),
         }
 

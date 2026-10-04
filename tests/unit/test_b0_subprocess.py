@@ -19,6 +19,7 @@ from morena_r.evaluation.runner import (
 )
 from morena_r.models.native_morena import (
     GenerationConfig,
+    RuntimeConfig,
 )
 
 
@@ -70,6 +71,9 @@ import sys
 
 payload = json.loads(sys.stdin.read())
 case_id = payload["eval_input"]["case_id"]
+
+if payload["runtime"]["device"] != "cpu":
+    raise SystemExit(7)
 
 result = {
     "schema_version": "1.0",
@@ -230,3 +234,60 @@ def test_subprocess_adapter_rejects_malformed_worker_result(
         == AttemptTransportStatus.EXECUTION_ERROR
     )
     assert observation.worker_returncode == 0
+
+
+def test_subprocess_adapter_propagates_explicit_runtime_config(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "runtime_worker.py",
+        """import json
+import sys
+
+payload = json.loads(sys.stdin.read())
+case_id = payload["eval_input"]["case_id"]
+device = payload["runtime"]["device"]
+
+result = {
+    "schema_version": "1.0",
+    "case_id": case_id,
+    "raw_output": device,
+    "prompt_sha256": "runtime123",
+    "input_token_count": 1,
+    "output_token_count": 1,
+    "stop_reason": "eos",
+    "model_inference_seconds": 0.01,
+}
+
+sys.stdout.write(json.dumps(result))
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+        runtime_config=RuntimeConfig(
+            device="cuda:1",
+        ),
+    )
+
+    raw = adapter.generate(
+        make_input(
+            "runtime-case"
+        )
+    )
+
+    assert raw == "cuda:1"
+
+    observation = adapter.get_observation(
+        "runtime-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.COMPLETED
+    )

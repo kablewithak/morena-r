@@ -16,6 +16,7 @@ from morena_r.contracts.evaluation import EvalInput  # noqa: E402
 from morena_r.models.native_morena import (  # noqa: E402
     GenerationConfig,
     NativeMorenaRuntime,
+    RuntimeConfig,
 )
 from morena_r.prompting.b0 import (  # noqa: E402
     render_b0_prompt,
@@ -34,6 +35,10 @@ generation_config = GenerationConfig(
     **payload["generation"]
 )
 
+runtime_config = RuntimeConfig(
+    **payload["runtime"]
+)
+
 prompt = render_b0_prompt(
     eval_input
 )
@@ -44,7 +49,8 @@ prompt_sha256 = hashlib.sha256(
 
 
 runtime = NativeMorenaRuntime(
-    root=ROOT
+    root=ROOT,
+    runtime_config=runtime_config,
 )
 
 generation = runtime.generate(
