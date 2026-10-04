@@ -30,8 +30,50 @@ REFERENCE_LOADER_SHA256 = (
 )
 
 ATTENTION_MODE = "sdpa"
-DEVICE = "cpu"
 MAX_SEQUENCE_TOKENS = 4096
+
+
+@dataclass(frozen=True)
+class RuntimeConfig:
+    device: str = "cpu"
+
+    def resolve_device(self) -> torch.device:
+        if self.device == "cpu":
+            return torch.device("cpu")
+
+        if not self.device.startswith("cuda:"):
+            raise ValueError(
+                "device must be 'cpu' or explicit 'cuda:<index>'."
+            )
+
+        index_text = self.device.removeprefix(
+            "cuda:"
+        )
+
+        if not index_text.isdigit():
+            raise ValueError(
+                "CUDA device must use a non-negative integer index."
+            )
+
+        index = int(index_text)
+
+        if not torch.cuda.is_available():
+            raise RuntimeError(
+                "CUDA device requested but CUDA is unavailable."
+            )
+
+        device_count = torch.cuda.device_count()
+
+        if index >= device_count:
+            raise RuntimeError(
+                "CUDA device index is unavailable: "
+                f"requested={index}, available={device_count}."
+            )
+
+        return torch.device(
+            "cuda",
+            index,
+        )
 
 
 @dataclass(frozen=True)
@@ -104,8 +146,19 @@ class NativeMorenaRuntime:
         self,
         *,
         root: Path,
+        runtime_config: RuntimeConfig | None = None,
     ) -> None:
         self._root = root
+
+        self._runtime_config = (
+            runtime_config
+            if runtime_config is not None
+            else RuntimeConfig()
+        )
+
+        self._device = (
+            self._runtime_config.resolve_device()
+        )
 
         self._upstream = (
             root
@@ -189,7 +242,7 @@ class NativeMorenaRuntime:
 
         state_dict = load_file(
             self._weights_path,
-            device=DEVICE,
+            device=str(self._device),
         )
 
         load_result = self.model.load_state_dict(
@@ -218,13 +271,32 @@ class NativeMorenaRuntime:
             in self.model.parameters()
         }
 
-        assert parameter_dtypes == {
+        if parameter_dtypes != {
             "torch.bfloat16"
-        }
+        }:
+            raise RuntimeError(
+                "Loaded parameter dtype differs from qualified BF16 identity: "
+                f"{sorted(parameter_dtypes)}"
+            )
 
-        assert parameter_devices == {
-            "cpu"
-        }
+        expected_device = str(
+            self._device
+        )
+
+        if parameter_devices != {
+            expected_device
+        }:
+            raise RuntimeError(
+                "Loaded parameter device differs from requested runtime device: "
+                f"expected={expected_device}, "
+                f"actual={sorted(parameter_devices)}"
+            )
+
+    def _synchronize_device(self) -> None:
+        if self._device.type == "cuda":
+            torch.cuda.synchronize(
+                self._device
+            )
 
     def _verify_identity(self) -> None:
         expected = {
@@ -302,7 +374,7 @@ class NativeMorenaRuntime:
         x = torch.tensor(
             [input_ids],
             dtype=torch.long,
-            device=DEVICE,
+            device=self._device,
         )
 
         torch.manual_seed(
@@ -310,6 +382,8 @@ class NativeMorenaRuntime:
         )
 
         generated_ids: list[int] = []
+
+        self._synchronize_device()
 
         started = time.perf_counter()
 
@@ -391,6 +465,8 @@ class NativeMorenaRuntime:
                 stop_reason = (
                     "max_new_tokens"
                 )
+
+        self._synchronize_device()
 
         inference_seconds = (
             time.perf_counter()
