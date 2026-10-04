@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyd
@@ -45,6 +45,8 @@ Thumbs.db
 # Local model and dataset caches
 .cache/
 models/
+!src/morena_r/models/
+!src/morena_r/models/*.py
 artifacts/
 checkpoints/
 
