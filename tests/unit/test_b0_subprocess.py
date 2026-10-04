@@ -1,0 +1,232 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from pathlib import Path
+
+import pytest
+
+from morena_r.contracts.evaluation import (
+    AttemptTransportStatus,
+    EvalInput,
+    EvalMessage,
+)
+from morena_r.evaluation.b0_subprocess import (
+    B0SubprocessAdapter,
+)
+from morena_r.evaluation.runner import (
+    ModelExecutionError,
+    ModelTimeoutError,
+)
+from morena_r.models.native_morena import (
+    GenerationConfig,
+)
+
+
+def make_input(
+    case_id: str = "subprocess-case",
+) -> EvalInput:
+    return EvalInput(
+        case_id=case_id,
+        family_id="subprocess-family",
+        languages=("en",),
+        messages=(
+            EvalMessage(
+                role="user",
+                content="Synthetic subprocess test.",
+            ),
+        ),
+        evidence=(),
+        available_tools=(),
+        permitted_tools=(),
+        evaluation_time_utc=datetime(
+            2026,
+            1,
+            1,
+            tzinfo=timezone.utc,
+        ),
+    )
+
+
+def write_worker(
+    path: Path,
+    source: str,
+) -> Path:
+    path.write_text(
+        source,
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    return path
+
+
+def test_subprocess_adapter_returns_raw_output(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "success_worker.py",
+        """import json
+import sys
+
+payload = json.loads(sys.stdin.read())
+case_id = payload["eval_input"]["case_id"]
+
+result = {
+    "schema_version": "1.0",
+    "case_id": case_id,
+    "raw_output": '{"decision":"RESPOND","answerability":"SUPPORTED","answer":"fixture"}',
+    "prompt_sha256": "abc123",
+    "input_token_count": 10,
+    "output_token_count": 5,
+    "stop_reason": "eos",
+    "model_inference_seconds": 0.01,
+}
+
+sys.stdout.write(json.dumps(result))
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+    )
+
+    raw = adapter.generate(
+        make_input()
+    )
+
+    assert '"decision":"RESPOND"' in raw
+
+    observation = adapter.get_observation(
+        "subprocess-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.COMPLETED
+    )
+    assert observation.worker_returncode == 0
+    assert observation.input_token_count == 10
+    assert observation.output_token_count == 5
+    assert observation.elapsed_seconds >= 0
+
+
+def test_subprocess_adapter_enforces_timeout(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "slow_worker.py",
+        """import time
+time.sleep(2)
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=0.05,
+    )
+
+    with pytest.raises(
+        ModelTimeoutError,
+    ):
+        adapter.generate(
+            make_input(
+                "timeout-case"
+            )
+        )
+
+    observation = adapter.get_observation(
+        "timeout-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.TIMEOUT
+    )
+    assert observation.worker_returncode is None
+    assert observation.elapsed_seconds < 2
+
+
+def test_subprocess_adapter_records_worker_failure(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "failure_worker.py",
+        """import sys
+sys.exit(3)
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+    )
+
+    with pytest.raises(
+        ModelExecutionError,
+    ):
+        adapter.generate(
+            make_input(
+                "failure-case"
+            )
+        )
+
+    observation = adapter.get_observation(
+        "failure-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.EXECUTION_ERROR
+    )
+    assert observation.worker_returncode == 3
+
+
+def test_subprocess_adapter_rejects_malformed_worker_result(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "malformed_worker.py",
+        """print("not-json")
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+    )
+
+    with pytest.raises(
+        ModelExecutionError,
+    ):
+        adapter.generate(
+            make_input(
+                "malformed-case"
+            )
+        )
+
+    observation = adapter.get_observation(
+        "malformed-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.EXECUTION_ERROR
+    )
+    assert observation.worker_returncode == 0

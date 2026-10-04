@@ -19,6 +19,7 @@ from morena_r.contracts.actions import (  # noqa: E402
     ToolResult,
 )
 from morena_r.contracts.evaluation import (  # noqa: E402
+    AttemptObservation,
     AttemptRecord,
     EvalCase,
     EvalGold,
@@ -45,6 +46,7 @@ schemas = {
     "eval_gold.schema.json": EvalGold.model_json_schema(),
     "eval_case.schema.json": EvalCase.model_json_schema(),
     "attempt_record.schema.json": AttemptRecord.model_json_schema(),
+    "attempt_observation.schema.json": AttemptObservation.model_json_schema(),
     "run_summary.schema.json": RunSummary.model_json_schema(),
     "episode_event.schema.json": EpisodeEvent.model_json_schema(),
     "tool_episode_result.schema.json": ToolEpisodeResult.model_json_schema(),
