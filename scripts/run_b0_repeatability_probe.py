@@ -35,7 +35,7 @@ FIRST_REPORT = (
     ROOT
     / "reports"
     / "b0"
-    / "integration_probe_v1.json"
+    / "integration_probe_v2.json"
 )
 
 OUTPUT = (
