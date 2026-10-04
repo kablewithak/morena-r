@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "protocol_id": "b0-initial-decision-pilot-v1",
+  "status": "frozen_before_execution",
+  "scope": "Initial development B0 decision pilot. Measures first model decision only; does not yet claim end-to-end tool success.",
+  "model": {
+    "repository": "vamboai/morena-1.5b-instruct",
+    "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+    "runtime": "native-pytorch-cpu",
+    "attention_mode": "sdpa"
+  },
+  "prompt": {
+    "version": "b0-minimal-json-v1"
+  },
+  "generation": {
+    "seed": 1234,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_new_tokens": 48,
+    "wall_clock_timeout_seconds": 3600
+  },
+  "case_ids": [
+    "ref-respond-supported",
+    "ref-ask-clarification",
+    "ref-refuse",
+    "ref-tool-correct"
+  ],
+  "scoring": {
+    "schema_valid": true,
+    "action_correct": true,
+    "answerability_correct": true,
+    "tool_identity_correct_when_required": true
+  },
+  "observed_runtime_basis_seconds": [
+    2073.6682271000464,
+    2586.892896800069,
+    2133.847
+  ],
+  "qualification_state": {
+    "b0_repeatability_observed": true,
+    "baseline_reproduced": false,
+    "improvement_claimed": false
+  }
+}
