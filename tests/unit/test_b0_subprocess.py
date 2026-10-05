@@ -76,10 +76,16 @@ if payload["runtime"]["device"] != "cpu":
     raise SystemExit(7)
 
 result = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "case_id": case_id,
     "raw_output": '{"decision":"RESPOND","answerability":"SUPPORTED","answer":"fixture"}',
     "prompt_sha256": "abc123",
+    "input_ids": [2, 10],
+    "generated_ids": [49],
+    "runtime_device": "cpu",
+    "parameter_dtype": "torch.bfloat16",
+    "attention_mode": "sdpa",
+    "model_load_seconds": 0.02,
     "input_token_count": 10,
     "output_token_count": 5,
     "stop_reason": "eos",
@@ -116,6 +122,12 @@ sys.stdout.write(json.dumps(result))
     assert observation.worker_returncode == 0
     assert observation.input_token_count == 10
     assert observation.output_token_count == 5
+    assert observation.input_ids == (2, 10)
+    assert observation.generated_ids == (49,)
+    assert observation.runtime_device == "cpu"
+    assert observation.parameter_dtype == "torch.bfloat16"
+    assert observation.attention_mode == "sdpa"
+    assert observation.model_load_seconds == 0.02
     assert observation.elapsed_seconds >= 0
 
 
@@ -249,10 +261,16 @@ case_id = payload["eval_input"]["case_id"]
 device = payload["runtime"]["device"]
 
 result = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "case_id": case_id,
     "raw_output": device,
     "prompt_sha256": "runtime123",
+    "input_ids": [2],
+    "generated_ids": [49],
+    "runtime_device": device,
+    "parameter_dtype": "torch.bfloat16",
+    "attention_mode": "sdpa",
+    "model_load_seconds": 0.02,
     "input_token_count": 1,
     "output_token_count": 1,
     "stop_reason": "eos",
@@ -291,3 +309,66 @@ sys.stdout.write(json.dumps(result))
         observation.transport_status
         == AttemptTransportStatus.COMPLETED
     )
+
+
+def test_explicit_runtime_observation_preserves_device(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "runtime_evidence_worker.py",
+        """import json
+import sys
+
+payload = json.loads(sys.stdin.read())
+case_id = payload["eval_input"]["case_id"]
+device = payload["runtime"]["device"]
+
+result = {
+    "schema_version": "1.1",
+    "case_id": case_id,
+    "raw_output": "fixture",
+    "prompt_sha256": "runtime456",
+    "input_ids": [2, 3],
+    "generated_ids": [49],
+    "runtime_device": device,
+    "parameter_dtype": "torch.bfloat16",
+    "attention_mode": "sdpa",
+    "model_load_seconds": 0.02,
+    "input_token_count": 2,
+    "output_token_count": 1,
+    "stop_reason": "eos",
+    "model_inference_seconds": 0.01,
+}
+
+sys.stdout.write(json.dumps(result))
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+        runtime_config=RuntimeConfig(
+            device="cuda:0",
+        ),
+    )
+
+    adapter.generate(
+        make_input(
+            "runtime-evidence-case"
+        )
+    )
+
+    observation = adapter.get_observation(
+        "runtime-evidence-case"
+    )
+
+    assert observation.runtime_device == "cuda:0"
+    assert observation.parameter_dtype == "torch.bfloat16"
+    assert observation.attention_mode == "sdpa"
+    assert observation.input_ids == (2, 3)
+    assert observation.generated_ids == (49,)
+    assert observation.model_load_seconds == 0.02

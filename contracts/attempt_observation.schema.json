@@ -12,6 +12,19 @@
   },
   "additionalProperties": false,
   "properties": {
+    "attention_mode": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attention Mode"
+    },
     "case_id": {
       "minLength": 1,
       "title": "Case Id",
@@ -26,6 +39,37 @@
       "minimum": 0,
       "title": "Elapsed Seconds",
       "type": "number"
+    },
+    "generated_ids": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Generated Ids"
+    },
+    "input_ids": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Ids"
     },
     "input_token_count": {
       "anyOf": [
@@ -53,6 +97,19 @@
       "default": null,
       "title": "Model Inference Seconds"
     },
+    "model_load_seconds": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Load Seconds"
+    },
     "output_token_count": {
       "anyOf": [
         {
@@ -65,6 +122,19 @@
       ],
       "default": null,
       "title": "Output Token Count"
+    },
+    "parameter_dtype": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parameter Dtype"
     },
     "prompt_sha256": {
       "anyOf": [
@@ -79,9 +149,25 @@
       "default": null,
       "title": "Prompt Sha256"
     },
+    "runtime_device": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Runtime Device"
+    },
     "schema_version": {
-      "const": "1.0",
-      "default": "1.0",
+      "default": "1.1",
+      "enum": [
+        "1.0",
+        "1.1"
+      ],
       "title": "Schema Version",
       "type": "string"
     },

@@ -42,7 +42,10 @@ class AttemptTransportStatus(StrEnum):
 
 
 class AttemptObservation(StrictContract):
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal[
+        "1.0",
+        "1.1",
+    ] = "1.1"
 
     case_id: NonEmptyStr
 
@@ -76,6 +79,22 @@ class AttemptObservation(StrictContract):
 
     stop_reason: NonEmptyStr | None = None
     prompt_sha256: NonEmptyStr | None = None
+
+    input_ids: tuple[int, ...] | None = Field(
+        default=None,
+        min_length=1,
+    )
+    generated_ids: tuple[int, ...] | None = None
+
+    runtime_device: NonEmptyStr | None = None
+    parameter_dtype: NonEmptyStr | None = None
+    attention_mode: NonEmptyStr | None = None
+
+    model_load_seconds: float | None = Field(
+        default=None,
+        ge=0,
+        allow_inf_nan=False,
+    )
 
     @model_validator(mode="after")
     def validate_observation(self) -> "AttemptObservation":
@@ -123,6 +142,25 @@ class AttemptObservation(StrictContract):
                 raise ValueError(
                     "Completed transport requires generation metadata."
                 )
+
+            if self.schema_version == "1.1":
+                required_v11 = (
+                    self.input_ids,
+                    self.generated_ids,
+                    self.runtime_device,
+                    self.parameter_dtype,
+                    self.attention_mode,
+                    self.model_load_seconds,
+                )
+
+                if any(
+                    value is None
+                    for value in required_v11
+                ):
+                    raise ValueError(
+                        "AttemptObservation v1.1 completed transport "
+                        "requires runtime and token evidence."
+                    )
 
         if (
             self.transport_status

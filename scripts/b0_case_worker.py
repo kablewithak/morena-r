@@ -60,10 +60,28 @@ generation = runtime.generate(
 
 
 result = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "case_id": eval_input.case_id,
     "raw_output": generation.raw_output,
     "prompt_sha256": prompt_sha256,
+    "input_ids": list(
+        generation.input_ids
+    ),
+    "generated_ids": list(
+        generation.generated_ids
+    ),
+    "runtime_device": (
+        runtime.runtime_device
+    ),
+    "parameter_dtype": (
+        runtime.parameter_dtype
+    ),
+    "attention_mode": (
+        runtime.attention_mode
+    ),
+    "model_load_seconds": (
+        runtime.model_load_seconds
+    ),
     "input_token_count": (
         generation.input_token_count
     ),

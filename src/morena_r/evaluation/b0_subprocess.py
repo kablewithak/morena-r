@@ -7,6 +7,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from time import monotonic
+from typing import Literal
 
 from pydantic import Field, model_validator
 
@@ -31,12 +32,26 @@ from morena_r.models.native_morena import (
 
 
 class B0WorkerResult(StrictContract):
-    schema_version: str = "1.0"
+    schema_version: Literal["1.1"] = "1.1"
 
     case_id: NonEmptyStr
     raw_output: str
 
     prompt_sha256: NonEmptyStr
+
+    input_ids: tuple[int, ...] = Field(
+        min_length=1,
+    )
+    generated_ids: tuple[int, ...]
+
+    runtime_device: NonEmptyStr
+    parameter_dtype: NonEmptyStr
+    attention_mode: NonEmptyStr
+
+    model_load_seconds: float = Field(
+        ge=0,
+        allow_inf_nan=False,
+    )
 
     input_token_count: int = Field(
         ge=0,
@@ -306,6 +321,24 @@ class B0SubprocessAdapter:
             ),
             prompt_sha256=(
                 worker_result.prompt_sha256
+            ),
+            input_ids=(
+                worker_result.input_ids
+            ),
+            generated_ids=(
+                worker_result.generated_ids
+            ),
+            runtime_device=(
+                worker_result.runtime_device
+            ),
+            parameter_dtype=(
+                worker_result.parameter_dtype
+            ),
+            attention_mode=(
+                worker_result.attention_mode
+            ),
+            model_load_seconds=(
+                worker_result.model_load_seconds
             ),
         )
 

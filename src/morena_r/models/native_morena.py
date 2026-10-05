@@ -232,6 +232,12 @@ class NativeMorenaRuntime:
             )
         )
 
+        self._synchronize_device()
+
+        model_load_started = (
+            time.perf_counter()
+        )
+
         with torch.device("meta"):
             self.model = M.Transformer(
                 M.ModelConfig(
@@ -291,6 +297,33 @@ class NativeMorenaRuntime:
                 f"expected={expected_device}, "
                 f"actual={sorted(parameter_devices)}"
             )
+
+        self._parameter_dtype = next(
+            iter(parameter_dtypes)
+        )
+
+        self._synchronize_device()
+
+        self._model_load_seconds = (
+            time.perf_counter()
+            - model_load_started
+        )
+
+    @property
+    def runtime_device(self) -> str:
+        return str(self._device)
+
+    @property
+    def parameter_dtype(self) -> str:
+        return self._parameter_dtype
+
+    @property
+    def attention_mode(self) -> str:
+        return ATTENTION_MODE
+
+    @property
+    def model_load_seconds(self) -> float:
+        return self._model_load_seconds
 
     def _synchronize_device(self) -> None:
         if self._device.type == "cuda":
