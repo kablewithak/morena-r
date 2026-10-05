@@ -1,0 +1,41 @@
+{
+  "attempt_id": "kq0-m02-20261005T124331Z-540997c7",
+  "files": {
+    "SHA256SUMS": {
+      "bytes": 410,
+      "sha256": "40d806cf7fff1e0ad536bded6575f359efe3cbbedec961a857a9b0be07405517"
+    },
+    "config.json": {
+      "bytes": 1813,
+      "sha256": "e46cbea0588ff434cc5ffec0f06d444579b1f55a47e93f11ce43658a04926391"
+    },
+    "load_example.py": {
+      "bytes": 2888,
+      "sha256": "b0730bd0f6afea78ccb9151c340f0216eacf6335245d24957edae91316bae285"
+    },
+    "model.safetensors": {
+      "bytes": 2969826328,
+      "sha256": "2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e"
+    },
+    "modeling_morena.py": {
+      "bytes": 52103,
+      "sha256": "1b2693d823e709a4614f091025448febc19ca0e32aa6a431c28f090e3b486de9"
+    },
+    "tokenizer.json": {
+      "bytes": 4655332,
+      "sha256": "97e5dc822407e4ecb6bac02b0fb8a883e465344953e2fac3becf7b5aacae4de3"
+    }
+  },
+  "inference_run": false,
+  "m01_bundle_sha256": "4e09218c61d74d826fffea0ad85c84890ead5498f5449c1c1a51e763ab9267f7",
+  "model_directory": "model_artifact/morena-1.5b-instruct/b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+  "model_loaded": false,
+  "model_weights_in_evidence_zip": false,
+  "repository": "vamboai/morena-1.5b-instruct",
+  "revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+  "schema_version": "1.0",
+  "small_artifact_identity_match": true,
+  "source_commit": "1daff5d03959212bc75043707b466c02faa0e39e",
+  "weight_checksum_match": true,
+  "weight_tensor_count": 254
+}

@@ -1,0 +1,89 @@
+{
+    "schema_version":  "1.0",
+    "state":  "KQ0_FINAL_DECISION",
+    "decision":  "PASS",
+    "outcome":  "A_EXACT_PROFILE_QUALIFIES",
+    "runtime_profile_id":  "kaggle-t4-bf16-sdpa-v1",
+    "execution_provenance":  {
+                                 "execution_commit":  "1daff5d03959212bc75043707b466c02faa0e39e",
+                                 "execution_branch":  "b0-initial-pilot",
+                                 "source_materializer_attempt":  "kq0-m01-20261005T102146Z-02899218",
+                                 "model_materializer_attempt":  "kq0-m02-20261005T124331Z-540997c7",
+                                 "runtime_qualification_attempt":  "kq0-e01-20261005T142132Z-0363457d",
+                                 "one_token_smoke_attempt":  "kq0-e02-20261005T164841Z-af94d8e3",
+                                 "b0_parity_attempt":  "kq0-e03-20261005T173845Z-e4840b02",
+                                 "evidence_commit":  null,
+                                 "evidence_commit_note":  "This receipt was created after execution. The later evidence commit did not execute the qualification."
+                             },
+    "model_identity":  {
+                           "repository":  "vamboai/morena-1.5b-instruct",
+                           "revision":  "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+                           "weight_sha256":  "2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e",
+                           "weight_bytes":  2969826328,
+                           "weight_tensor_count":  254
+                       },
+    "runtime":  {
+                    "python_version":  "3.11.16",
+                    "torch_version":  "2.11.0+cu128",
+                    "device":  "cuda:0",
+                    "accelerator":  "Tesla T4",
+                    "cuda_visible_devices":  "0",
+                    "checkpoint_parameter_dtype":  "torch.bfloat16",
+                    "attention_mode":  "sdpa",
+                    "autocast_used":  false,
+                    "precision_conversion_used":  false,
+                    "multi_gpu_execution_used":  false,
+                    "bf16_without_emulation":  false,
+                    "native_hardware_bf16_claimed":  false
+                },
+    "qualification_evidence":  {
+                                   "identities_match":  true,
+                                   "environment_reconstructed":  true,
+                                   "exact_checkpoint_loaded":  true,
+                                   "one_token_smoke_passed":  true,
+                                   "frozen_b0_transport_completed":  true,
+                                   "frozen_b0_case":  "ref-respond-supported",
+                                   "frozen_b0_prompt_sha256":  "0de71ce930bad6d59df787ab97c4b4c0df1b97335fc59f6ab7022a22b5715dc1",
+                                   "gpu_b0_attempt_status":  "invalid_response",
+                                   "gpu_b0_failure_code":  "PARSE_ERROR",
+                                   "parity_classification":  "BEHAVIORAL_DIVERGENCE_SAME_OBSERVED_OUTCOME",
+                                   "generated_ids_match_cpu":  false,
+                                   "raw_output_match_cpu":  false,
+                                   "stop_reason_match_cpu":  true,
+                                   "parse_valid_match_cpu":  true,
+                                   "failure_code_match_cpu":  true,
+                                   "first_result_replaced":  false,
+                                   "repair_or_retry_used":  false
+                               },
+    "timing":  {
+                   "gpu_b0_inference_seconds":  13.66257964700003,
+                   "cpu_primary_inference_seconds":  2586.8928968000691,
+                   "cpu_repeat_inference_seconds":  2133.8472522001248,
+                   "cpu_primary_to_gpu_inference_ratio":  189.34146871510373,
+                   "cpu_repeat_to_gpu_inference_ratio":  156.18187101794248,
+                   "claim_scope":  "Observed inference-time ratios for this single matched 48-token case only. Not an end-to-end speedup claim and not a general throughput benchmark."
+               },
+    "evidence_files":  {
+                           "environment_inventory":  "reports/kaggle/kq0_environment_inventory_v1.json",
+                           "model_identity":  "reports/kaggle/kq0_model_identity_v1.json",
+                           "runtime_profile":  "reports/kaggle/kq0_runtime_profile_v1.json",
+                           "inference_smoke":  "reports/kaggle/kq0_inference_smoke_v1.json",
+                           "b0_integration_probe":  "reports/kaggle/b0_integration_probe_v1.json",
+                           "parity_comparison":  "reports/kaggle/kq0_cpu_gpu_parity_comparison_v1.json",
+                           "environment_lock":  "requirements/kaggle-kq0-environment.lock.txt",
+                           "checksums":  "reports/kaggle/checksums_v1.sha256"
+                       },
+    "limitations":  [
+                        "The Kaggle allocation exposed two Tesla T4 GPUs, but qualification intentionally bound execution to one logical GPU with CUDA_VISIBLE_DEVICES=0.",
+                        "The runtime reported BF16_WITHOUT_EMULATION=False. Qualification proves successful execution of the BF16 checkpoint and required BF16/SDPA operations, not native T4 hardware BF16 execution.",
+                        "CPU and GPU generated token sequences diverged on the frozen B0 case while preserving the same parse/action outcome.",
+                        "The B0 model response remained invalid JSON with PARSE_ERROR. KQ0 qualifies compute reliability; it does not claim model quality improvement.",
+                        "The timing comparison covers one matched 48-token case and does not establish general throughput or end-to-end speedup.",
+                        "KQ0 qualifies compute only and does not itself advance formal gates G3, G4, or G5."
+                    ],
+    "decision_rationale":  "Exact pinned identities and intended BF16 native-PyTorch runtime executed successfully on a single Kaggle T4; the bounded smoke passed; the frozen B0 subprocess path completed with reconstructable evidence; CPU/GPU behavioral divergence was measured and classified; and the observed runtime materially reduces the practical cost of continued B0/B1 execution.",
+    "next_permitted_step":  "Use the qualified Kaggle profile for resumable initial B0/B1 compute while preserving CPU as the reference profile. Next, complete the four-case frozen B0 pilot with immediate per-case receipts and full failure accounting.",
+    "training_executed":  false,
+    "improvement_claimed":  false,
+    "kq0_pass":  true
+}
