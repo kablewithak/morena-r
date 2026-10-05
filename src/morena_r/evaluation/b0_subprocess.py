@@ -107,6 +107,7 @@ class B0SubprocessAdapter:
         generation_config: GenerationConfig,
         timeout_seconds: float,
         runtime_config: RuntimeConfig | None = None,
+        python_executable: Path | None = None,
     ) -> None:
         if timeout_seconds <= 0:
             raise ValueError(
@@ -116,6 +117,18 @@ class B0SubprocessAdapter:
         if not worker_path.is_file():
             raise FileNotFoundError(
                 f"B0 worker is missing: {worker_path}"
+            )
+
+        selected_python = (
+            python_executable
+            if python_executable is not None
+            else Path(sys.executable)
+        )
+
+        if not selected_python.is_file():
+            raise FileNotFoundError(
+                "B0 Python executable is missing: "
+                f"{selected_python}"
             )
 
         self._root = root
@@ -130,6 +143,9 @@ class B0SubprocessAdapter:
         )
         self._timeout_seconds = (
             timeout_seconds
+        )
+        self._python_executable = (
+            selected_python
         )
 
         self._observations: dict[
@@ -190,7 +206,7 @@ class B0SubprocessAdapter:
         try:
             completed = subprocess.run(
                 [
-                    sys.executable,
+                    str(self._python_executable),
                     str(self._worker_path),
                 ],
                 cwd=self._root,

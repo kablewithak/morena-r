@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -372,3 +373,106 @@ sys.stdout.write(json.dumps(result))
     assert observation.input_ids == (2, 3)
     assert observation.generated_ids == (49,)
     assert observation.model_load_seconds == 0.02
+
+
+def test_subprocess_adapter_rejects_missing_python_executable(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "worker.py",
+        "print('unused')\n",
+    )
+
+    missing_python = (
+        tmp_path / "missing-python"
+    )
+
+    with pytest.raises(
+        FileNotFoundError,
+        match="Python executable is missing",
+    ):
+        B0SubprocessAdapter(
+            root=tmp_path,
+            worker_path=worker,
+            generation_config=GenerationConfig(
+                max_new_tokens=1,
+            ),
+            timeout_seconds=5,
+            python_executable=missing_python,
+        )
+
+
+def test_subprocess_adapter_uses_explicit_python_executable(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    worker = write_worker(
+        tmp_path / "unused_worker.py",
+        "print('unused')\n",
+    )
+
+    selected_python = write_worker(
+        tmp_path / "qualified-python",
+        "synthetic executable marker\n",
+    )
+
+    worker_result = {
+        "schema_version": "1.1",
+        "case_id": "python-executable-case",
+        "raw_output": "fixture",
+        "prompt_sha256": "python123",
+        "input_ids": [2, 3],
+        "generated_ids": [49],
+        "runtime_device": "cpu",
+        "parameter_dtype": "torch.bfloat16",
+        "attention_mode": "sdpa",
+        "model_load_seconds": 0.02,
+        "input_token_count": 2,
+        "output_token_count": 1,
+        "stop_reason": "eos",
+        "model_inference_seconds": 0.01,
+    }
+
+    captured_command: list[str] = []
+
+    class Completed:
+        returncode = 0
+        stdout = json.dumps(
+            worker_result
+        )
+
+    def fake_run(
+        command: list[str],
+        **kwargs: object,
+    ) -> Completed:
+        captured_command.extend(
+            command
+        )
+        return Completed()
+
+    monkeypatch.setattr(
+        "morena_r.evaluation.b0_subprocess.subprocess.run",
+        fake_run,
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+        python_executable=selected_python,
+    )
+
+    raw = adapter.generate(
+        make_input(
+            "python-executable-case"
+        )
+    )
+
+    assert raw == "fixture"
+    assert captured_command == [
+        str(selected_python),
+        str(worker),
+    ]
