@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "state": "KQ0_INTEGRITY_CORRECTION",
+  "date": "2026-10-06",
+  "scope": "checksum_manifest_line_ending_mismatch",
+  "accepted_evidence_commit": "884bde6eaddb79fffd570436ebe5c38074b0ea6a",
+  "qualified_execution_commit": "1daff5d03959212bc75043707b466c02faa0e39e",
+  "supersedes_manifest": "reports/kaggle/checksums_v1.sha256",
+  "successor_manifest": "reports/kaggle/checksums_v2.sha256",
+  "affected_artifact": {
+    "path": "reports/kaggle/kq0_decision_v1.json",
+    "git_blob_sha1": "024e3e1e934d1cd54e8f7a53e3d55e5114fa5cdd",
+    "committed_size_bytes": 6738,
+    "committed_line_endings": "LF",
+    "committed_sha256": "f6226bfb00e9f4cee44f81d5209f4b0b9126d35927ce8156ef2ec8e88e768c74",
+    "v1_recorded_sha256": "3a441c6bb73e5139bff1c578892a2d41d5fac073a0cc784c0eed760da17a2b4b",
+    "crlf_transformed_sha256": "3a441c6bb73e5139bff1c578892a2d41d5fac073a0cc784c0eed760da17a2b4b"
+  },
+  "finding": "The SHA-256 recorded in checksums_v1.sha256 for the KQ0 decision matches a CRLF-transformed representation, while the exact committed Git bytes use LF line endings.",
+  "semantic_equivalence": "The committed LF representation and the corresponding CRLF-transformed representation decode to the same JSON object.",
+  "scientific_effect": "none",
+  "model_outputs_changed": false,
+  "runtime_result_changed": false,
+  "rerun_required": false,
+  "history_policy": "Preserve the original decision receipt and checksums_v1.sha256 unchanged. Use checksums_v2.sha256 for verification of the accepted stored bytes."
+}

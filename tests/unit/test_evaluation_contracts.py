@@ -13,6 +13,8 @@ from morena_r.contracts.actions import (
     ToolName,
 )
 from morena_r.contracts.evaluation import (
+    AttemptObservation,
+    AttemptTransportStatus,
     EvalCase,
     EvalGold,
     EvalInput,
@@ -140,4 +142,76 @@ def test_input_and_gold_permission_state_must_match() -> None:
             provenance="unit-test",
             license="internal-test",
             review_status="not_required",
+        )
+
+
+def test_attempt_observation_v1_historical_success_is_readable() -> None:
+    observation = AttemptObservation(
+        schema_version="1.0",
+        case_id="historical-case",
+        transport_status=(
+            AttemptTransportStatus.COMPLETED
+        ),
+        started_at_utc=datetime(
+            2026,
+            1,
+            1,
+            tzinfo=timezone.utc,
+        ),
+        completed_at_utc=datetime(
+            2026,
+            1,
+            1,
+            0,
+            0,
+            1,
+            tzinfo=timezone.utc,
+        ),
+        elapsed_seconds=1.0,
+        worker_returncode=0,
+        model_inference_seconds=0.5,
+        input_token_count=10,
+        output_token_count=1,
+        stop_reason="eos",
+        prompt_sha256="abc123",
+    )
+
+    assert observation.schema_version == "1.0"
+    assert observation.runtime_device is None
+    assert observation.generated_ids is None
+
+
+def test_attempt_observation_v11_requires_runtime_evidence() -> None:
+    with pytest.raises(
+        ValidationError,
+        match="requires runtime and token evidence",
+    ):
+        AttemptObservation(
+            schema_version="1.1",
+            case_id="v11-case",
+            transport_status=(
+                AttemptTransportStatus.COMPLETED
+            ),
+            started_at_utc=datetime(
+                2026,
+                1,
+                1,
+                tzinfo=timezone.utc,
+            ),
+            completed_at_utc=datetime(
+                2026,
+                1,
+                1,
+                0,
+                0,
+                1,
+                tzinfo=timezone.utc,
+            ),
+            elapsed_seconds=1.0,
+            worker_returncode=0,
+            model_inference_seconds=0.5,
+            input_token_count=10,
+            output_token_count=1,
+            stop_reason="eos",
+            prompt_sha256="abc123",
         )

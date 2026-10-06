@@ -1,0 +1,49 @@
+{
+  "frozen_contract_preserved": {
+    "generation": {
+      "max_new_tokens": 48,
+      "seed": 1234,
+      "temperature": 0.7,
+      "top_p": 0.9,
+      "wall_clock_timeout_seconds": 3600
+    },
+    "input_ids_sha256": "5aeac8936defff455cf284f27f0371ef4208e2090bafe614cc64d72e53e24440",
+    "model_repository": "vamboai/morena-1.5b-instruct",
+    "model_revision": "b4be1225c9b593ffa79f2bf46d8a84a83d385c67",
+    "prompt_sha256": "0de71ce930bad6d59df787ab97c4b4c0df1b97335fc59f6ab7022a22b5715dc1",
+    "prompt_version": "b0-minimal-json-v1"
+  },
+  "parent_protocol_id": "b0-initial-decision-pilot-v1",
+  "parent_protocol_sha256": "646acc4654db98693b1cea115d4a2442dd75c08f311f066d622e844341f43ed8",
+  "parent_runtime": "native-pytorch-cpu",
+  "profile_id": "kaggle-t4-bf16-sdpa-v1",
+  "provenance": {
+    "environment_lock_sha256": "d5639416bbf1d1486decf1ff53d8ab859f5d64a4631472338527765d4b72be96",
+    "implementation_commit": "1daff5d03959212bc75043707b466c02faa0e39e",
+    "m01_source_bundle_sha256": "4e09218c61d74d826fffea0ad85c84890ead5498f5449c1c1a51e763ab9267f7",
+    "m02_model_manifest_sha256": "5449afa11c8a2f4934374f9ab5513e8ce1f837f0dc45d2dfdac101938a340b65",
+    "resolved_environment_receipt_sha256": "245481366a662e73e8e3328d551ce6615cc0ca026d116e43883e3caf669caab7"
+  },
+  "qualification_limits": {
+    "actual_model_loaded": true,
+    "b0_parity_executed": false,
+    "generation_executed": false,
+    "kq0_pass": false,
+    "model_forward_executed": false,
+    "one_token_smoke_executed": false,
+    "small_bf16_sdpa_probe_executed": true
+  },
+  "runtime_override": {
+    "attention_mode": "sdpa",
+    "autocast_used": false,
+    "checkpoint_parameter_dtype": "torch.bfloat16",
+    "cuda_visible_devices": "0",
+    "device": "cuda:0",
+    "framework": "native-pytorch",
+    "multi_gpu_execution_used": false,
+    "precision_conversion_used": false,
+    "torch_version": "2.11.0+cu128"
+  },
+  "schema_version": "1.0",
+  "state": "LOAD_AND_OPERATOR_SCREEN_PASS_AWAITING_ONE_TOKEN_SMOKE"
+}

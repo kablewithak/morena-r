@@ -35,6 +35,145 @@ class AttemptErrorCode(StrEnum):
     EXECUTION_ERROR = "EXECUTION_ERROR"
 
 
+class AttemptTransportStatus(StrEnum):
+    COMPLETED = "completed"
+    TIMEOUT = "timeout"
+    EXECUTION_ERROR = "execution_error"
+
+
+class AttemptObservation(StrictContract):
+    schema_version: Literal[
+        "1.0",
+        "1.1",
+    ] = "1.1"
+
+    case_id: NonEmptyStr
+
+    transport_status: AttemptTransportStatus
+
+    started_at_utc: datetime
+    completed_at_utc: datetime
+
+    elapsed_seconds: float = Field(
+        ge=0,
+        allow_inf_nan=False,
+    )
+
+    worker_returncode: int | None = None
+
+    model_inference_seconds: float | None = Field(
+        default=None,
+        ge=0,
+        allow_inf_nan=False,
+    )
+
+    input_token_count: int | None = Field(
+        default=None,
+        ge=0,
+    )
+
+    output_token_count: int | None = Field(
+        default=None,
+        ge=0,
+    )
+
+    stop_reason: NonEmptyStr | None = None
+    prompt_sha256: NonEmptyStr | None = None
+
+    input_ids: tuple[int, ...] | None = Field(
+        default=None,
+        min_length=1,
+    )
+    generated_ids: tuple[int, ...] | None = None
+
+    runtime_device: NonEmptyStr | None = None
+    parameter_dtype: NonEmptyStr | None = None
+    attention_mode: NonEmptyStr | None = None
+
+    model_load_seconds: float | None = Field(
+        default=None,
+        ge=0,
+        allow_inf_nan=False,
+    )
+
+    @model_validator(mode="after")
+    def validate_observation(self) -> "AttemptObservation":
+        for value in (
+            self.started_at_utc,
+            self.completed_at_utc,
+        ):
+            if (
+                value.tzinfo is None
+                or value.utcoffset() is None
+            ):
+                raise ValueError(
+                    "Attempt observation timestamps must be timezone-aware."
+                )
+
+        if (
+            self.completed_at_utc
+            < self.started_at_utc
+        ):
+            raise ValueError(
+                "Attempt completion cannot precede start."
+            )
+
+        if (
+            self.transport_status
+            == AttemptTransportStatus.COMPLETED
+        ):
+            if self.worker_returncode != 0:
+                raise ValueError(
+                    "Completed transport requires worker_returncode=0."
+                )
+
+            required = (
+                self.model_inference_seconds,
+                self.input_token_count,
+                self.output_token_count,
+                self.stop_reason,
+                self.prompt_sha256,
+            )
+
+            if any(
+                value is None
+                for value in required
+            ):
+                raise ValueError(
+                    "Completed transport requires generation metadata."
+                )
+
+            if self.schema_version == "1.1":
+                required_v11 = (
+                    self.input_ids,
+                    self.generated_ids,
+                    self.runtime_device,
+                    self.parameter_dtype,
+                    self.attention_mode,
+                    self.model_load_seconds,
+                )
+
+                if any(
+                    value is None
+                    for value in required_v11
+                ):
+                    raise ValueError(
+                        "AttemptObservation v1.1 completed transport "
+                        "requires runtime and token evidence."
+                    )
+
+        if (
+            self.transport_status
+            == AttemptTransportStatus.TIMEOUT
+            and self.worker_returncode is not None
+        ):
+            raise ValueError(
+                "Timeout transport must not claim a worker return code."
+            )
+
+        return self
+
+
 class EvalMessage(StrictContract):
     role: Literal[
         "system",
