@@ -131,6 +131,13 @@ sys.stdout.write(json.dumps(result))
     assert observation.model_load_seconds == 0.02
     assert observation.elapsed_seconds >= 0
 
+    diagnostics = adapter.get_diagnostics(
+        "subprocess-case"
+    )
+
+    assert diagnostics.worker_stdout is None
+    assert diagnostics.worker_stderr is None
+
 
 def test_subprocess_adapter_enforces_timeout(
     tmp_path: Path,
@@ -170,6 +177,12 @@ time.sleep(2)
     )
     assert observation.worker_returncode is None
     assert observation.elapsed_seconds < 2
+
+    diagnostics = adapter.get_diagnostics(
+        "timeout-case"
+    )
+
+    assert diagnostics.case_id == "timeout-case"
 
 
 def test_subprocess_adapter_records_worker_failure(
@@ -211,6 +224,61 @@ sys.exit(3)
     assert observation.worker_returncode == 3
 
 
+def test_subprocess_adapter_preserves_worker_failure_streams(
+    tmp_path: Path,
+) -> None:
+    worker = write_worker(
+        tmp_path / "failure_stream_worker.py",
+        """import sys
+
+print("worker stdout marker")
+print("worker stderr marker", file=sys.stderr)
+sys.exit(4)
+""",
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+    )
+
+    with pytest.raises(
+        ModelExecutionError,
+    ):
+        adapter.generate(
+            make_input(
+                "failure-stream-case"
+            )
+        )
+
+    observation = adapter.get_observation(
+        "failure-stream-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.EXECUTION_ERROR
+    )
+    assert observation.worker_returncode == 4
+
+    diagnostics = adapter.get_diagnostics(
+        "failure-stream-case"
+    )
+
+    assert (
+        diagnostics.worker_stdout
+        == "worker stdout marker\n"
+    )
+    assert (
+        diagnostics.worker_stderr
+        == "worker stderr marker\n"
+    )
+
+
 def test_subprocess_adapter_rejects_malformed_worker_result(
     tmp_path: Path,
 ) -> None:
@@ -247,6 +315,74 @@ def test_subprocess_adapter_rejects_malformed_worker_result(
         == AttemptTransportStatus.EXECUTION_ERROR
     )
     assert observation.worker_returncode == 0
+
+    diagnostics = adapter.get_diagnostics(
+        "malformed-case"
+    )
+
+    assert diagnostics.worker_stdout == "not-json\n"
+
+
+def test_subprocess_adapter_records_launch_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    worker = write_worker(
+        tmp_path / "unused_worker.py",
+        "print('unused')\n",
+    )
+
+    def fail_launch(
+        *_args: object,
+        **_kwargs: object,
+    ) -> None:
+        raise OSError(
+            "synthetic launch failure"
+        )
+
+    monkeypatch.setattr(
+        "morena_r.evaluation.b0_subprocess.subprocess.run",
+        fail_launch,
+    )
+
+    adapter = B0SubprocessAdapter(
+        root=tmp_path,
+        worker_path=worker,
+        generation_config=GenerationConfig(
+            max_new_tokens=1,
+        ),
+        timeout_seconds=5,
+    )
+
+    with pytest.raises(
+        ModelExecutionError,
+        match="could not be launched",
+    ):
+        adapter.generate(
+            make_input(
+                "launch-failure-case"
+            )
+        )
+
+    observation = adapter.get_observation(
+        "launch-failure-case"
+    )
+
+    assert (
+        observation.transport_status
+        == AttemptTransportStatus.EXECUTION_ERROR
+    )
+    assert observation.worker_returncode is None
+
+    diagnostics = adapter.get_diagnostics(
+        "launch-failure-case"
+    )
+
+    assert diagnostics.worker_stdout is None
+    assert (
+        diagnostics.worker_stderr
+        == "synthetic launch failure"
+    )
 
 
 def test_subprocess_adapter_propagates_explicit_runtime_config(
@@ -440,6 +576,7 @@ def test_subprocess_adapter_uses_explicit_python_executable(
         stdout = json.dumps(
             worker_result
         )
+        stderr = ""
 
     def fake_run(
         command: list[str],

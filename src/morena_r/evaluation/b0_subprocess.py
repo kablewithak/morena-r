@@ -9,7 +9,7 @@ from pathlib import Path
 from time import monotonic
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, ValidationError, model_validator
 
 from morena_r.contracts.actions import (
     NonEmptyStr,
@@ -69,8 +69,17 @@ class B0WorkerResult(StrictContract):
     )
 
 
+class B0TransportDiagnostics(StrictContract):
+    schema_version: Literal["1.0"] = "1.0"
+
+    case_id: NonEmptyStr
+
+    worker_stdout: str | None = None
+    worker_stderr: str | None = None
+
+
 class B0CaseReceipt(StrictContract):
-    schema_version: str = "1.0"
+    schema_version: Literal["1.1"] = "1.1"
 
     run_id: NonEmptyStr
     implementation_commit: NonEmptyStr
@@ -79,6 +88,7 @@ class B0CaseReceipt(StrictContract):
 
     attempt: AttemptRecord
     observation: AttemptObservation
+    diagnostics: B0TransportDiagnostics
 
     @model_validator(mode="after")
     def validate_receipt(self) -> "B0CaseReceipt":
@@ -95,7 +105,30 @@ class B0CaseReceipt(StrictContract):
                 "Attempt and observation case IDs differ."
             )
 
+        if (
+            self.attempt.case_id
+            != self.diagnostics.case_id
+        ):
+            raise ValueError(
+                "Attempt and diagnostics case IDs differ."
+            )
+
         return self
+
+
+def _captured_text(
+    value: str | bytes | None,
+) -> str | None:
+    if value is None:
+        return None
+
+    if isinstance(value, bytes):
+        return value.decode(
+            "utf-8",
+            errors="replace",
+        )
+
+    return value
 
 
 class B0SubprocessAdapter:
@@ -153,6 +186,11 @@ class B0SubprocessAdapter:
             AttemptObservation,
         ] = {}
 
+        self._diagnostics: dict[
+            str,
+            B0TransportDiagnostics,
+        ] = {}
+
     def get_observation(
         self,
         case_id: str,
@@ -165,6 +203,39 @@ class B0SubprocessAdapter:
             raise KeyError(
                 f"No observation exists for case {case_id!r}."
             ) from error
+
+    def get_diagnostics(
+        self,
+        case_id: str,
+    ) -> B0TransportDiagnostics:
+        try:
+            return self._diagnostics[
+                case_id
+            ]
+        except KeyError as error:
+            raise KeyError(
+                f"No diagnostics exist for case {case_id!r}."
+            ) from error
+
+    def _record_transport(
+        self,
+        *,
+        case_id: str,
+        observation: AttemptObservation,
+        worker_stdout: str | None,
+        worker_stderr: str | None,
+    ) -> None:
+        self._observations[
+            case_id
+        ] = observation
+
+        self._diagnostics[
+            case_id
+        ] = B0TransportDiagnostics(
+            case_id=case_id,
+            worker_stdout=worker_stdout,
+            worker_stderr=worker_stderr,
+        )
 
     def generate(
         self,
@@ -220,22 +291,53 @@ class B0SubprocessAdapter:
         except subprocess.TimeoutExpired as error:
             elapsed = monotonic() - started
 
-            self._observations[
-                case_id
-            ] = AttemptObservation(
+            self._record_transport(
                 case_id=case_id,
-                transport_status=(
-                    AttemptTransportStatus.TIMEOUT
+                observation=AttemptObservation(
+                    case_id=case_id,
+                    transport_status=(
+                        AttemptTransportStatus.TIMEOUT
+                    ),
+                    started_at_utc=started_at,
+                    completed_at_utc=datetime.now(
+                        timezone.utc
+                    ),
+                    elapsed_seconds=elapsed,
                 ),
-                started_at_utc=started_at,
-                completed_at_utc=datetime.now(
-                    timezone.utc
+                worker_stdout=_captured_text(
+                    error.stdout
                 ),
-                elapsed_seconds=elapsed,
+                worker_stderr=_captured_text(
+                    error.stderr
+                ),
             )
 
             raise ModelTimeoutError(
                 f"B0 worker exceeded {self._timeout_seconds} seconds."
+            ) from error
+
+        except OSError as error:
+            elapsed = monotonic() - started
+
+            self._record_transport(
+                case_id=case_id,
+                observation=AttemptObservation(
+                    case_id=case_id,
+                    transport_status=(
+                        AttemptTransportStatus.EXECUTION_ERROR
+                    ),
+                    started_at_utc=started_at,
+                    completed_at_utc=datetime.now(
+                        timezone.utc
+                    ),
+                    elapsed_seconds=elapsed,
+                ),
+                worker_stdout=None,
+                worker_stderr=str(error),
+            )
+
+            raise ModelExecutionError(
+                "B0 worker could not be launched."
             ) from error
 
         elapsed = monotonic() - started
@@ -245,19 +347,22 @@ class B0SubprocessAdapter:
         )
 
         if completed.returncode != 0:
-            self._observations[
-                case_id
-            ] = AttemptObservation(
+            self._record_transport(
                 case_id=case_id,
-                transport_status=(
-                    AttemptTransportStatus.EXECUTION_ERROR
+                observation=AttemptObservation(
+                    case_id=case_id,
+                    transport_status=(
+                        AttemptTransportStatus.EXECUTION_ERROR
+                    ),
+                    started_at_utc=started_at,
+                    completed_at_utc=completed_at,
+                    elapsed_seconds=elapsed,
+                    worker_returncode=(
+                        completed.returncode
+                    ),
                 ),
-                started_at_utc=started_at,
-                completed_at_utc=completed_at,
-                elapsed_seconds=elapsed,
-                worker_returncode=(
-                    completed.returncode
-                ),
+                worker_stdout=completed.stdout,
+                worker_stderr=completed.stderr,
             )
 
             raise ModelExecutionError(
@@ -276,18 +381,24 @@ class B0SubprocessAdapter:
                 )
             )
 
-        except Exception as error:
-            self._observations[
-                case_id
-            ] = AttemptObservation(
+        except (
+            json.JSONDecodeError,
+            ValidationError,
+        ) as error:
+            self._record_transport(
                 case_id=case_id,
-                transport_status=(
-                    AttemptTransportStatus.EXECUTION_ERROR
+                observation=AttemptObservation(
+                    case_id=case_id,
+                    transport_status=(
+                        AttemptTransportStatus.EXECUTION_ERROR
+                    ),
+                    started_at_utc=started_at,
+                    completed_at_utc=completed_at,
+                    elapsed_seconds=elapsed,
+                    worker_returncode=0,
                 ),
-                started_at_utc=started_at,
-                completed_at_utc=completed_at,
-                elapsed_seconds=elapsed,
-                worker_returncode=0,
+                worker_stdout=completed.stdout,
+                worker_stderr=completed.stderr,
             )
 
             raise ModelExecutionError(
@@ -295,66 +406,76 @@ class B0SubprocessAdapter:
             ) from error
 
         if worker_result.case_id != case_id:
-            self._observations[
-                case_id
-            ] = AttemptObservation(
+            self._record_transport(
                 case_id=case_id,
-                transport_status=(
-                    AttemptTransportStatus.EXECUTION_ERROR
+                observation=AttemptObservation(
+                    case_id=case_id,
+                    transport_status=(
+                        AttemptTransportStatus.EXECUTION_ERROR
+                    ),
+                    started_at_utc=started_at,
+                    completed_at_utc=completed_at,
+                    elapsed_seconds=elapsed,
+                    worker_returncode=0,
                 ),
-                started_at_utc=started_at,
-                completed_at_utc=completed_at,
-                elapsed_seconds=elapsed,
-                worker_returncode=0,
+                worker_stdout=completed.stdout,
+                worker_stderr=completed.stderr,
             )
 
             raise ModelExecutionError(
                 "B0 worker result case ID does not match request."
             )
 
-        self._observations[
-            case_id
-        ] = AttemptObservation(
+        self._record_transport(
             case_id=case_id,
-            transport_status=(
-                AttemptTransportStatus.COMPLETED
+            observation=AttemptObservation(
+                case_id=case_id,
+                transport_status=(
+                    AttemptTransportStatus.COMPLETED
+                ),
+                started_at_utc=started_at,
+                completed_at_utc=completed_at,
+                elapsed_seconds=elapsed,
+                worker_returncode=0,
+                model_inference_seconds=(
+                    worker_result.model_inference_seconds
+                ),
+                input_token_count=(
+                    worker_result.input_token_count
+                ),
+                output_token_count=(
+                    worker_result.output_token_count
+                ),
+                stop_reason=(
+                    worker_result.stop_reason
+                ),
+                prompt_sha256=(
+                    worker_result.prompt_sha256
+                ),
+                input_ids=(
+                    worker_result.input_ids
+                ),
+                generated_ids=(
+                    worker_result.generated_ids
+                ),
+                runtime_device=(
+                    worker_result.runtime_device
+                ),
+                parameter_dtype=(
+                    worker_result.parameter_dtype
+                ),
+                attention_mode=(
+                    worker_result.attention_mode
+                ),
+                model_load_seconds=(
+                    worker_result.model_load_seconds
+                ),
             ),
-            started_at_utc=started_at,
-            completed_at_utc=completed_at,
-            elapsed_seconds=elapsed,
-            worker_returncode=0,
-            model_inference_seconds=(
-                worker_result.model_inference_seconds
-            ),
-            input_token_count=(
-                worker_result.input_token_count
-            ),
-            output_token_count=(
-                worker_result.output_token_count
-            ),
-            stop_reason=(
-                worker_result.stop_reason
-            ),
-            prompt_sha256=(
-                worker_result.prompt_sha256
-            ),
-            input_ids=(
-                worker_result.input_ids
-            ),
-            generated_ids=(
-                worker_result.generated_ids
-            ),
-            runtime_device=(
-                worker_result.runtime_device
-            ),
-            parameter_dtype=(
-                worker_result.parameter_dtype
-            ),
-            attention_mode=(
-                worker_result.attention_mode
-            ),
-            model_load_seconds=(
-                worker_result.model_load_seconds
+            worker_stdout=None,
+            worker_stderr=(
+                completed.stderr
+                if completed.stderr
+                else None
             ),
         )
 
