@@ -1,0 +1,5 @@
+case_id,attempt_status,transport_status,elapsed_seconds,model_load_seconds,model_inference_seconds,input_token_count,output_token_count,stop_reason
+ref-respond-supported,invalid_response,completed,27.842397,1.955180,14.454576,183,48,max_new_tokens
+ref-ask-clarification,invalid_response,completed,27.766419,1.939502,14.637344,182,48,max_new_tokens
+ref-refuse,invalid_response,completed,27.871739,1.942723,14.718360,179,48,max_new_tokens
+ref-tool-correct,invalid_response,completed,17.527062,1.944398,4.346637,184,13,eos

@@ -1,0 +1,108 @@
+10.4s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+10.4s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+10.4s 3 0.00s - to python to disable frozen modules.
+10.4s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+11.2s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+11.2s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+11.2s 7 0.00s - to python to disable frozen modules.
+11.2s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+12.6s 9 ATTEMPT_ID=b0-p01-20261006T164155Z-9d90d044
+12.6s 10 EXECUTION_COMMIT=cf03e18edbe91567efc9252ef242b3dc9d645b1a
+12.6s 11 SOURCE_BUNDLE_SHA256=9136e1601358becc57e87816c042500660d31a20f344c8c1a0cdc5b59af9c769
+12.6s 12 MODEL_REVISION=b4be1225c9b593ffa79f2bf46d8a84a83d385c67
+12.8s 13 STEP_START=attached_input_identity
+46.1s 14 ATTACHED_INPUT_IDENTITY=PASS
+46.1s 15 M01_SOURCE_BUNDLE=/kaggle/input/notebooks/kabomolefe/morena-r-b0-m01-source-materializer-v1/morena_r_b0_m01_source/morena-r-source.bundle
+46.1s 16 M02_MODEL_DIR=/kaggle/input/notebooks/kabomolefe/morena-r-kq0-m02-model-materializer-v2/morena_r_kq0_m02_model/model_artifact/morena-1.5b-instruct/b4be1225c9b593ffa79f2bf46d8a84a83d385c67
+46.1s 17 MODEL_WEIGHT_SHA256=2ab0b7f3b88ddb22a7fc91bd674e10481f1c8eefa404595557083edf6bc8029e
+46.1s 18 STEP_PASS=attached_input_identity
+46.3s 19 STEP_START=source_and_model_binding
+46.4s 20 EXECUTION_SOURCE_IDENTITY=PASS
+46.4s 21 SOURCE_COMMIT=cf03e18edbe91567efc9252ef242b3dc9d645b1a
+46.4s 22 SOURCE_TREE=3c21bde726c88bf1e85bc6f4a89895a958dd4e05
+46.4s 23 SOURCE_CLEAN_AFTER_MODEL_BINDING=TRUE
+46.4s 24 ENVIRONMENT_LOCK_SHA256=d5639416bbf1d1486decf1ff53d8ab859f5d64a4631472338527765d4b72be96
+46.4s 25 STEP_PASS=source_and_model_binding
+46.6s 26 STEP_START=gpu_inventory_and_python_311
+48.9s 27 GPU_ENVIRONMENT_INVENTORY=PASS
+48.9s 28 PHYSICAL_GPU_COUNT=2
+48.9s 29 SELECTED_GPU=Tesla T4
+48.9s 30 CUDA_VISIBLE_DEVICES=0
+48.9s 31 PYTHON_311_RUNTIME=PASS
+48.9s 32 WORKER_PYTHON_VERSION=3.11.16
+48.9s 33 STEP_PASS=gpu_inventory_and_python_311
+49.1s 34 STEP_START=runtime_package_resolution
+202.8s 35 RUNTIME_PACKAGE_RESOLUTION=PASS
+202.8s 36 PIP_CHECK='No broken requirements found.'
+202.8s 37 ENVIRONMENT_LOCK_SHA256=d5639416bbf1d1486decf1ff53d8ab859f5d64a4631472338527765d4b72be96
+202.8s 38 STEP_PASS=runtime_package_resolution
+203.0s 39 STEP_START=four_case_scientific_execution
+306.4s 40 B0_INITIAL_PILOT=COMPLETE
+306.4s 41 RUN_ID=b0-initial-decision-pilot-v1-d1b4c6b61cb3a1aa
+306.4s 42 EXECUTION_COMMIT=cf03e18edbe91567efc9252ef242b3dc9d645b1a
+306.4s 43 RUNTIME_PROFILE=kaggle-t4-bf16-sdpa-v1
+306.4s 44 CASE=ref-respond-supported STATUS=invalid_response DECISION=NONE
+306.4s 45 CASE=ref-ask-clarification STATUS=invalid_response DECISION=NONE
+306.4s 46 CASE=ref-refuse STATUS=invalid_response DECISION=NONE
+306.4s 47 CASE=ref-tool-correct STATUS=invalid_response DECISION=NONE
+306.4s 48 COMPLETED=0
+306.4s 49 INVALID_RESPONSES=4
+306.4s 50 TIMEOUTS=0
+306.4s 51 EXECUTION_ERRORS=0
+306.4s 52 FINAL_BUNDLE_CHECKSUM_SHA256=7f894a8d026c1e0d0b0660ced99e070b8890a14ac5ba29628e77cbc3f1a8f7cf
+306.4s 53 FINAL_BUNDLE=reports/b0/initial_pilot_v1/final
+306.4s 54 BASELINE_REPRODUCED=FALSE
+306.4s 55 IMPROVEMENT_CLAIMED=FALSE
+306.4s 56 FOUR_CASE_PILOT_ARTIFACT_VALIDATION=PASS
+306.4s 57 STEP_PASS=four_case_scientific_execution
+306.4s 58 B0_P01_STATUS=PASS
+306.4s 59 EVIDENCE_ZIP=/kaggle/working/morena_r_b0_p01_pilot/morena_r_b0-p01-20261006T164155Z-9d90d044_PASS_evidence.zip
+306.4s 60 EVIDENCE_ZIP_BYTES=21748
+306.4s 61 EVIDENCE_ZIP_SHA256=f7a7c25c2ac622104ffb3666c7b787255a9c92a9362f444c55a7680ad65f3e51
+306.4s 62 BASELINE_REPRODUCED=FALSE
+306.4s 63 IMPROVEMENT_CLAIMED=FALSE
+306.4s 64 # MORENA-R Initial B0 Pilot Baseline Report
+306.4s 65 
+306.4s 66 - Run ID: `b0-initial-decision-pilot-v1-d1b4c6b61cb3a1aa`
+306.4s 67 - Execution commit: `cf03e18edbe91567efc9252ef242b3dc9d645b1a`
+306.4s 68 - Runtime profile: `kaggle-t4-bf16-sdpa-v1`
+306.4s 69 - Model revision: `b4be1225c9b593ffa79f2bf46d8a84a83d385c67`
+306.4s 70 - Prompt version: `b0-minimal-json-v1`
+306.4s 71 - Scope: four-case development diagnostic; not final G5 baseline
+306.4s 72 - Review status: harness-only fixtures
+306.4s 73 
+306.4s 74 ## Case outcomes
+306.4s 75 
+306.4s 76 | Case | Expected decision | Observed decision | Attempt status | Failure labels |
+306.4s 77 |---|---|---|---|---|
+306.4s 78 | `ref-respond-supported` | RESPOND | — | invalid_response | invalid_schema, parser_failure |
+306.4s 79 | `ref-ask-clarification` | ASK_CLARIFICATION | — | invalid_response | invalid_schema, parser_failure |
+306.4s 80 | `ref-refuse` | REFUSE | — | invalid_response | invalid_schema, parser_failure |
+306.4s 81 | `ref-tool-correct` | CALL_TOOL | — | invalid_response | invalid_schema, parser_failure |
+306.4s 82 
+306.4s 83 ## Deterministic metrics
+306.4s 84 
+306.4s 85 | Metric | Eligible | Missing | Estimate |
+306.4s 86 |---|---:|---:|---:|
+306.4s 87 | `action_correct` | 4 | 0 | 0.000000 |
+306.4s 88 | `answerability_correct` | 4 | 0 | 0.000000 |
+306.4s 89 | `schema_valid` | 4 | 0 | 0.000000 |
+306.4s 90 | `tool_identity_correct` | 1 | 3 | 0.000000 |
+306.4s 91 
+306.4s 92 ## Interpretation limits
+306.4s 93 
+306.4s 94 This four-case run is diagnostic evidence for the initial B0 execution path. It is not a statistically sufficient estimate of final multilingual reliability, does not complete G5, and is not protected evaluation.
+306.4s 95 
+306.4s 96 KQ0 qualified the compute profile. This report does not claim model improvement, CPU/GPU token equivalence, or native no-emulation T4 BF16 support.
+306.4s 97 
+306.4s 98 B0_P01_FOUR_CASE_PILOT=PASS
+306.4s 99 SAVE_VERSION=SAVE_AND_RUN_ALL
+306.4s 100 GPU_CAN_BE_TURNED_OFF_AFTER_OUTPUTS_ARE_SAVED
+309.3s 101 /usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+309.3s 102 cells[i][c] = re.sub('\\\\\|', '|', cell)
+309.5s 103 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+309.5s 104 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+310.3s 105 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+310.4s 106 [NbConvertApp] Writing 42609 bytes to __notebook__.ipynb
+312.8s 107 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+313.4s 108 [NbConvertApp] Writing 372578 bytes to __results__.html
