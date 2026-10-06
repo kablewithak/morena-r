@@ -1,0 +1,4 @@
+{"case_id":"ref-respond-supported","expected_decision":"RESPOND","failure_labels":["invalid_schema","parser_failure"],"observed_decision":null,"parse_error":"PARSE_ERROR","runtime_error":null,"status":"invalid_response"}
+{"case_id":"ref-ask-clarification","expected_decision":"ASK_CLARIFICATION","failure_labels":["invalid_schema","parser_failure"],"observed_decision":null,"parse_error":"PARSE_ERROR","runtime_error":null,"status":"invalid_response"}
+{"case_id":"ref-refuse","expected_decision":"REFUSE","failure_labels":["invalid_schema","parser_failure"],"observed_decision":null,"parse_error":"PARSE_ERROR","runtime_error":null,"status":"invalid_response"}
+{"case_id":"ref-tool-correct","expected_decision":"CALL_TOOL","failure_labels":["invalid_schema","parser_failure"],"observed_decision":null,"parse_error":"PARSE_ERROR","runtime_error":null,"status":"invalid_response"}
